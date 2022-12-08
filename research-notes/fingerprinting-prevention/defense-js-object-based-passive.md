@@ -1,0 +1,46 @@
+# A Defense against JavaScript Object-Based Fingerprinting and Passive Fingerprinting
+
+<https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9885716&tag=1>
+
+- Related Works: Browser fingerprinting from coarse traffic summaries: Techniques and implications
+- Fingerprinting: “Browser fingerprinting is a mechanism that identifies and collects the attributes of a device and each of these attribute values are combined to generate a unique identifier for the related device which can be used for tracking purposes.
+  - Unlike cookies, fingerprinting is unregulated and may happen without the user knowing
+  - A stateless tracking technique, which makes it difficult for users themselves to block or opt out of like cookies
+  - Usually motivated by a desire for delivering targeted services (ads)
+- This paper uses API normalization, making unique values with generic ones to try to “blend in with the crowd”
+- Found that 10.18% of Alexa top 100k uses fingerprinting techniques
+- Passive Attributes used in fingerprinting:
+  - These are usually able to be observed passively from network traffic
+  - Computer make and model
+  - HTTP header data – Most common passive fingerprinting method
+  - OS version
+  - Browser version
+  - Time zone
+  - Language settings
+  - Hardware/Tech specs (CPU, GPU, Hard disk, Screen size, Resolution, etc.)
+- Active Attributes used in fingerprinting:
+  - These are generated characteristics using browser elements
+  - JavaScript, Flash, other plugins
+- Existing protection mechanisms:
+  - Normalize the return values of JavaScript APIs
+  - Randomize the return values of JavaScript APIs
+  - Use heuristics to find and block fingerprinting scripts
+- Some fingerprinting mitigation techniques are weak as they don’t change everything (ex: navigator.user agent needs to change HTTP header and javascript object)
+  - Here, a fingerprinting algorithm would be able to tell that the user changed this property, rendering mitigation efforts futile
+- Fingerprinting Techniques:
+  - Canvas fingerprinting
+    - Already discussed elsewhere…
+  - WebGL fingerprinting
+    - A graphics api that can render interactive 3D objects and manipulate them with javascript
+    - Unique fingerprints rely on the distinct renders produced.
+  - AudioContext fingerprinting
+    - Must be started with user input, button click, screen swipe, etc.?
+    - Known to be stable over time?
+    - Similar to canvas fingerprinting, differences in hardware and software stack on the device yield differences in the processed audio signals.
+  - JavaScript Object-based fingerprinting
+    - Unmasking of browser attributes with the help of JavaScript properties
+    - Done via navigator objects and screen objects
+    - Navigator Objects: Browser information (vendor, version, js enabled, online status, plugins, etc.)
+    - Screen Objects: Display config information (resolution, color depth, etc.)
+- This paper normalizes javascript object-based fingerprinting values to make users more generic (similar to tor and brave)
+  - Also spoofs http header data

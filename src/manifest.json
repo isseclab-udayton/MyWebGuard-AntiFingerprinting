@@ -1,0 +1,70 @@
+{
+  "manifest_version": 2,
+  "name": "MyWebGuard: SS-LBS Project",
+  "description": "A Self-Protecting Tool for Web Users. Edited by Nathan Joslin and Justen Stall.",
+  "version": "1.0.0",
+  "icons": {
+    "128": "images/UD-logo.png"
+  },
+  "browser_action": {
+    "default_icon": "images/UD-logo.png",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "scripts": [
+      "js/background.js"
+    ],
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "permissions": [
+        "tabs",
+        "activeTab",
+        "storage",
+        "webNavigation",
+        "unlimitedStorage",
+        "notifications",
+        "clipboardWrite",
+        "downloads",
+        "tabCapture",
+        "cookies",
+        "browsingData",
+        "webRequest",
+        "*://*/*",
+        "gcm",
+        "contextMenus",
+        "management"
+      ],
+      "js": [
+        "js/mywebguard.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "storage",
+    "webNavigation",
+    "unlimitedStorage",
+    "notifications",
+    "clipboardWrite",
+    "downloads",
+    "tabCapture",
+    "cookies",
+    "browsingData",
+    "webRequest",
+    "webRequestBlocking",
+    "*://*/*",
+    "gcm",
+    "contextMenus",
+    "management"
+  ],
+  "web_accessible_resources": [
+    "js/mywebguard.js"
+  ]
+}
