@@ -50,7 +50,7 @@ and commented out some that are not in our scope anymore or are specific to MyWe
 * Prevent Digital Fingerprinting by Monitoring Web Pages.
 * Preserve Web Page Functionality while Enforcing Policies.
 * Research dynamic policies with Machine Learning.
-* Create an implementation plan for a Machine Learning model for dynamic policies.
+<!-- * Create an implementation plan for a Machine Learning model for dynamic policies. -->
 <!-- * Understanding of Malicious JavaScript Mitigation Techniques. -->
 <!-- * Understanding of Information Flow -->
 <!-- * Web Page Monitoring with a fine grained policy -->

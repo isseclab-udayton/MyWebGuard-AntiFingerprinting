@@ -198,23 +198,23 @@ injectee.innerHTML = `
 		}
 		
 		function canvasAllowed(ctx, objectName, functionName, args) {
-			// if (!canvasInViewport(ctx.canvas)) {
-			// 	console.log('[NOTICE] Canvas Element is NOT in the viewport!')
-			// 	return false
-			// }
+			if (!canvasInViewport(ctx.canvas)) {
+				console.log('[NOTICE] Canvas Element is NOT in the viewport!')
+				return false
+			}
 		
-			// if (ctx.canvas.style.zIndex < 0) {
-			// 	console.log('[NOTICE] Canvas Element has a negative z-axis!');
-			// 	return false;
-			// }
-			// var callstack = new Error().stack;
-			// var code_origin = getCodeOrigin(callstack);
-			// if (!originAllowed(code_origin, objectName, functionName, args)) {
-			// 	console.log('[NOTICE] Canvas Element has disallowed origin!');
-			// 	return false;
-			// }
-			// return true
-      return false
+			if (ctx.canvas.style.zIndex < 0) {
+				console.log('[NOTICE] Canvas Element has a negative z-axis!');
+				return false;
+			}
+			var callstack = new Error().stack;
+			var code_origin = getCodeOrigin(callstack);
+			if (!originAllowed(code_origin, objectName, functionName, args)) {
+				console.log('[NOTICE] Canvas Element has disallowed origin!');
+				return false;
+			}
+			return true
+      // return false
 		}
 		
 		function canvasInViewport(canvasElement) {
