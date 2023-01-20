@@ -10,7 +10,7 @@ Trello Workspace: [Honors Thesis Trello](https://trello.com/b/aWpvTMLX/honors-th
 
 Overleaf (view only): [Honors Thesis Paper](https://www.overleaf.com/read/ztnnywchdxrq)
 
-Github Repository: [MyWebGuard-AntiFingerprinting]
+Github Repository: [MyWebGuard-AntiFingerprinting](https://github.com/isseclab-udayton/MyWebGuard-AntiFingerprinting)
 
 ## Background Summary
 
