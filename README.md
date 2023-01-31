@@ -1,14 +1,16 @@
 # CPS 477 & 478 - Honors Thesis
 
 By: Nathan Joslin - <joslinn1@udayton.edu>
+
 Mentors: Dr. Phu Phung, Dr. Ahmed El Ouadrhiri
+
 Spring 2023
 
-## Device Fingerprinting Mitigation Using Concepts of Differential Privacy
+## Mitigation of Fingerprinting Attacks Reliant on Client Data Generation
 
 Trello Workspace: [Honors Thesis Trello](https://trello.com/b/aWpvTMLX/honors-thesis)
 
-Overleaf (view only): [Honors Thesis Paper](https://www.overleaf.com/read/ztnnywchdxrq)
+Overleaf: [Honors Thesis Paper](https://www.overleaf.com/read/ztnnywchdxrq)
 
 Github Repository: [MyWebGuard-AntiFingerprinting](https://github.com/isseclab-udayton/MyWebGuard-AntiFingerprinting)
 
