@@ -27,6 +27,10 @@ Instead of relying on browser information, this fingerprinting method relies on 
 - The time delay to 11 well-know websites is collected
 - IMPORTANT: The ping() core method is called every 800ms for each webpage. This must be what they refer to as the optimal "window" which
   they fail to clarify as a unit of time or not...
+  - However, each time a particular ip is pinged, the url is changed to the current time of the ping.
+  - IDEA: use currentTarget or target event listener property
+  - [currentTarget](https://www.w3schools.com/jsref/event_currenttarget.asp) _This is likely the one to use_
+  - [target](https://www.w3schools.com/jsref/event_target.asp)
 
 # How it works
 
