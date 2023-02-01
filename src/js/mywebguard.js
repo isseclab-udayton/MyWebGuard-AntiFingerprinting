@@ -214,7 +214,7 @@ injectee.innerHTML = `
 				return false;
 			}
 			return true
-      // return false
+      		//return false
 		}
 		
 		function canvasInViewport(canvasElement) {
