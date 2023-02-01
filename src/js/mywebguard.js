@@ -153,7 +153,6 @@ injectee.innerHTML = `
 					}
 				});
 		}
-
 		function canvasElement_policy(args, proceed, obj) {
 			var element = proceed()
 			// assign next policy if element is canvas
@@ -235,7 +234,26 @@ injectee.innerHTML = `
 			ctx.font = "10px Arial";
 			ctx.strokeText(poisonText, x, y);
 		}
-
+		function monitor_ping(){
+			var HTMLImageElement_src_original_desc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src")
+			Object.defineProperty(HTMLImageElement.prototype, "src",
+				{
+					...HTMLImageElement_src_original_desc,
+					get: function () {
+						//console.log("Image getter intercepted...")
+						return HTMLImageElement_src_original_desc.get.call(this);
+					},
+					set: function (val) {
+						console.log("Image setter intercepted...")
+						HTMLImageElement_src_original_desc.set.call(this, val);
+					},
+					enumerable: false,
+					configurable: false
+				}
+			);
+			mywebguard_log("img.src access is being monitored");
+		}
+		monitor_ping();
 		monitorMethod(window, "eval", eval_policy);
 		mywebguard_log("mywebguard.js is completely loaded");
 	}

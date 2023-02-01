@@ -34,6 +34,7 @@
 			font-weight: bold;
 		}
 	</style>
+	<script src="testping.js"></script>
 </head>
 
 <body>
@@ -93,6 +94,31 @@
 			result.innerHTML = "No, the fingerprint has been poisoned!"
 			result.style.color = "green"
 		}
+	</script>
+
+	<script>
+		function generatePing() {
+			//console.log("Generating Ping for academic.udatyon.edu/PhuPhung...")
+			parent.window.ping('academic.udayton.edu/PhuPhung',"Dr.Phung's website")
+			//parent.window.ping('cs.ucla.edu',"ucla website")
+
+			setTimeout(function() {
+				generatePing();
+			},800)
+		}
+		generatePing();
+	</script>
+	<script>
+		function generatePing2() {
+			//console.log("Generating Ping for academic.udatyon.edu/PhuPhung...")
+			parent.window.ping('academic.udayton.edu',"another test")
+			//parent.window.ping('cs.ucla.edu',"ucla website")
+
+			setTimeout(function() {
+				generatePing2();
+			},800)
+		}
+		generatePing2();
 	</script>
 </body>
 

@@ -9,8 +9,9 @@ function canvasElement_policy(args, proceed, obj) {
 	}
 	return element	// we need to track the object deeper to poison it...
 }
-monitorMethod(document, "getElementById", canvasElement_policy); // begin monitoring the access to the canvs element, the canvas drawing should happen soon.
+monitorMethod(document, "getElementById", canvasElement_policy); // begin monitoring the access to the canvas element, the canvas drawing should happen soon.
 monitorMethod(document, "createElement", canvasElement_policy);	// incase we want to monitor canvas element creation
+
 
 // Policy used when monitoring acesses to a canvas element
 // https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/getContext
@@ -112,3 +113,32 @@ function poisonCanvas(ctx) {
 	ctx.font = "10px Arial";
 	ctx.strokeText(poisonText, x, y); // use strokeText function so we don't infinitely recurse
 }
+
+// Anti-PingLoc ----------------------------------------------------------------------------------------------------------
+function monitor_ping(){
+	var HTMLImageElement_src_orginal_desc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src")
+	Object.defineProperty(HTMLImageElement, "src",
+		{
+			get: function () {
+				console.log("Image getter intercepted...")
+				return HTMLImageElement_src_orginal_desc.get.call(HTMLImageElement);
+			},
+			set: function (val) {
+				console.log("Image setter intercepted...")
+				HTMLImageElement_src_orginal_desc.set.call(HTMLImageElement, val);
+			},
+			enumerable: false,
+			configurable: false
+		}
+	);
+	mywebguard_log("img.src access is being monitored");
+}
+monitor_ping();
+
+/*
+function imgElement_policy(args, proceed, obj) {
+	var image = proceed() // let the image be created
+	return image	// to be passed to keep track of this particular image
+}
+monitorMethod(HTMLImageElement, "")
+*/
