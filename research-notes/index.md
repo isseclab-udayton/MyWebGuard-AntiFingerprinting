@@ -45,6 +45,8 @@
   - Normalization approach
   - Creates a shared library of hashes to give toDataURL, when toDataURL is called they replace it with a normalized version
   - Easily implemented with MyWebGuard
+- [The Optimal Window Size for Analysing Logitudinal Networks](https://www.nature.com/articles/s41598-017-13640-5#:~:text=The%20time%20interval%20between%20two,or%20participation%20statistics%20over%20time.)
+  - Insightful for the temporal collection of data
 
 #### Extenstion-Based Fingerprinting (Accessed: Fall 2023)
 

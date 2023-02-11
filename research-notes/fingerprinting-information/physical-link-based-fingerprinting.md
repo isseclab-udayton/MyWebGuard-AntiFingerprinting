@@ -24,13 +24,14 @@ Instead of relying on browser information, this fingerprinting method relies on 
 - Timestamp is used as the _relative path_ of the image resources
   - Different paths are generated each time, and there is no such image resource path named by the timestamp
   - Thus, the website always returns an error, and time of delay can be obtained by catching the onerror evernts
-- The time delay to 11 well-know websites is collected
+- The time delay to 11 well-know websites (domains?) is collected
 - IMPORTANT: The ping() core method is called every 800ms for each webpage. This must be what they refer to as the optimal "window" which
   they fail to clarify as a unit of time or not...
   - However, each time a particular ip is pinged, the url is changed to the current time of the ping.
   - IDEA: use currentTarget or target event listener property
   - [currentTarget](https://www.w3schools.com/jsref/event_currenttarget.asp) _This is likely the one to use_
   - [target](https://www.w3schools.com/jsref/event_target.asp)
+- They discuss pinging well known third-party sites: Facebook, Twitter, etc.
 
 # How it works
 
@@ -38,6 +39,7 @@ Instead of relying on browser information, this fingerprinting method relies on 
 
 - Time of delay calculated by catching the onerror events.
 - Time of delay collected from 11 sites
+- "Then, the user’s network link-state information can be obtained on the Web and infer the user’s login position to detect the user disguised as different users from the same position."
 
 2. Server Data Processing: Server performs data preprocessing and passes data to learning algorithms.
 
