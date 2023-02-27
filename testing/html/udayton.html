@@ -1,0 +1,19 @@
+<html>
+	<head>
+		<title>University of Dayton</title>
+		<script>
+			function generatePing() {
+                parent.window.ping('131.238.73.184',"udayton")
+				//Submit the result to the background
+				setTimeout(function() {
+					generatePing();
+				},800)
+			}
+			generatePing();
+		</script>
+	</head>
+	<body>
+	
+	</body>
+
+</html>

@@ -1,0 +1,19 @@
+<html>
+	<head>
+		<title>University of Colorado Boulder</title>
+		<script>
+			function generatePing() {
+                parent.window.ping('151.101.2.133',"boulder")
+				//Submit the result to the background
+				setTimeout(function() {
+					generatePing();
+				},800)
+			}
+			generatePing();
+		</script>
+	</head>
+	<body>
+	
+	</body>
+
+</html>

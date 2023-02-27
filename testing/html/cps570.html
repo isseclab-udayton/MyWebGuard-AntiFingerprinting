@@ -1,0 +1,19 @@
+<html>
+	<head>
+		<title>phuphung</title>
+		<script>
+			function generatePing() {
+                parent.window.ping('cps470570testingsite.com',"cps570")
+				//Submit the result to the background
+				setTimeout(function() {
+					generatePing();
+				},800)
+			}
+			generatePing();
+		</script>
+	</head>
+	<body>
+	
+	</body>
+
+</html>

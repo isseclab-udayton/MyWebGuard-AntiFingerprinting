@@ -1,0 +1,19 @@
+<html>
+	<head>
+		<title>University of Wisconsin</title>
+		<script>
+			function generatePing() {
+                parent.window.ping('144.92.9.70',"wisconsin")
+				//Submit the result to the background
+				setTimeout(function() {
+					generatePing();
+				},800)
+			}
+			generatePing();
+		</script>
+	</head>
+	<body>
+	
+	</body>
+
+</html>

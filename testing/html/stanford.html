@@ -1,0 +1,19 @@
+<html>
+	<head>
+		<title>Stanford University</title>
+		<script>
+			function generatePing() {
+                parent.window.ping('171.67.215.200',"stanford")
+				//Submit the result to the background
+				setTimeout(function() {
+					generatePing();
+				},800)
+			}
+			generatePing();
+		</script>
+	</head>
+	<body>
+	
+	</body>
+
+</html>

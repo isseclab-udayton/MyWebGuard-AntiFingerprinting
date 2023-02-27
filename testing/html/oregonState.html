@@ -1,0 +1,19 @@
+<html>
+	<head>
+		<title>Oregon State University</title>
+		<script>
+			function generatePing() {
+                parent.window.ping('52.27.33.250',"oregonState")
+				//Submit the result to the background
+				setTimeout(function() {
+					generatePing();
+				},800)
+			}
+			generatePing();
+		</script>
+	</head>
+	<body>
+	
+	</body>
+
+</html>

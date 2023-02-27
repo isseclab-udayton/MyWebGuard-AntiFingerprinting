@@ -1,0 +1,27 @@
+<!-- Loads some random anime image. Not sure what this is for... -->
+
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+		<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+		<META HTTP-EQUIV="Expires" CONTENT="0">
+	</head>
+	<body>
+		<div>
+			<script>
+				var time = new Date().getTime();
+				var string = "<img src=\"http://api.mtyqx.cn/tapi/random.php?"+time+ "\" width=\"60%\" id=\"img\"/>";
+				document.write(string);
+			</script>
+		</div>
+		<script>
+			function reload() {
+				document.location.reload();
+			}
+		</script>
+		<input type="button" onclick="reload()" value="Come on, old man! !"/>
+	</body>
+
+</html>

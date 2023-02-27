@@ -1,0 +1,17 @@
+<html>
+	<head>
+		<title>Texas A&M</title>
+		<script>
+			function generatePing() {
+                parent.window.ping('165.91.22.70',"texas")
+				//Submit the result to the background
+				setTimeout(function() {
+					generatePing();
+				},800)
+			}
+			generatePing();
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

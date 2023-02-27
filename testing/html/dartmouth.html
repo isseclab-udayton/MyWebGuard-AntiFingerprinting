@@ -1,0 +1,19 @@
+<html>
+	<head>
+		<title>Dartmouth College</title>
+		<script>
+			function generatePing() {
+                parent.window.ping('129.170.136.114',"dartmouth")
+				//Submit the result to the background
+				setTimeout(function() {
+					generatePing();
+				},800)
+			}
+			generatePing();
+		</script>
+	</head>
+	<body>
+	
+	</body>
+
+</html>

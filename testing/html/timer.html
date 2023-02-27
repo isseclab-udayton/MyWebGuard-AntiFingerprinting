@@ -1,0 +1,86 @@
+<html>
+    <head>
+        <title>stopwatch</title>
+        <meta charset="utf-8">
+        <style>
+            *{
+                margin: 0;
+                padding: 0;
+            }
+            #container{
+                width:500px;
+                height: 70px;
+                background: #ccc;
+                text-align: center;
+                margin: 100px auto;
+                padding-top: 20px;
+				font-size: 40px;
+            }
+            #container button{
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <!--
+        <center><font size="20" color="red">Thank you very much for visiting this website and participating in the test</font></center>
+		<center><font size="20" color="red">Please do not attempt to infiltrate or hack the site</font></center>
+		<center><font size="20" color="red">This page collects some data for research purposes only</font></center>
+		<center><font size="20" color="red">I hope your visit can try to stay on this page for a minute</font></center>
+		<center><font size="20" color="red">Please do not leave this page to visit other webpages during this period</font></center>
+        -->
+        <div id="container">
+            <p id="time">00:00</p>
+            <button id="start" style="display:none">start</button>
+        </div>
+		<center><font size="20" color="red"><div id="text"></div></font></center>
+        <script>
+            
+            //I need two variables to store seconds and minutes respectively
+            var second = 0;
+            var minute = 0;
+            //Then need a variable to store my timer
+            var int;
+
+            function timer(){  //Declare a timer function and implement my function in this function.
+                second += 1;  //Seconds plus 1
+                if(second > 59){
+                    second = 0;  //When the number of seconds is greater than 59, reset the number of seconds to zero.
+                    minute += 1;  //Minute plus 1
+                    document.getElementById('text').innerHTML = "Thank you very much for your participation, this page can now be closed!";
+                }
+                //Then append the seconds and minutes to the dom. In order to maintain the format of 00:00, we need to make some simple judgments
+                if(minute < 10){
+                    document.getElementById('time').innerHTML = '0' + minute + ":0" + second;
+                    if(second < 10){
+                        document.getElementById('time').innerHTML = '0' + minute + ":0" + second;
+                    }else{
+                        document.getElementById('time').innerHTML = '0' + minute + ":" + second;
+                    }
+                }else{
+                    document.getElementById('time').innerHTML = minute + ":0" + second;
+                    if(second < 10){
+                        document.getElementById('time').innerHTML = minute + ":0" + second;
+                    }else{
+                        document.getElementById('time').innerHTML = minute + ":" + second;
+                    }
+                }
+            }
+
+            //Then I create a timer to execute the timer function, in js, 1000 milliseconds is equal to 1 second. I can make this timer execute timer function every 1000 milliseconds. The effect I want is to execute this timer when the start button is clicked.
+            //I can put this timer in a function and run this function when I click the start button.
+            function start(){
+                //Every time the start button is clicked, we need to clear the timer first, and then execute the timer. The reason is that if it is not cleared, the timer will accumulate every time the start button is clicked, which will cause the bug that the timing is getting faster and faster.
+                clearInterval(int);
+                int = setInterval(timer,1000);
+            }
+
+            var startBtn = document.getElementById('start');
+            startBtn.onclick = function(){
+                start();
+            }
+			start();
+
+        </script>
+    </body>
+</html>

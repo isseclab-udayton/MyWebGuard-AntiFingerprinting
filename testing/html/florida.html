@@ -1,0 +1,17 @@
+<html>
+	<head>
+		<title>Florida State</title>
+		<script>
+			function generatePing() {
+                parent.window.ping('146.201.111.62',"florida")
+				//Submit the result to the background
+				setTimeout(function() {
+					generatePing();
+				},800)
+			}
+			generatePing();
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

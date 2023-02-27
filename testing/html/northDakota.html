@@ -1,0 +1,19 @@
+<html>
+	<head>
+		<title>University of North Dakota</title>
+		<script>
+			function generatePing() {
+                parent.window.ping('134.129.183.70',"northDakota")
+				//Submit the result to the background
+				setTimeout(function() {
+					generatePing();
+				},800)
+			}
+			generatePing();
+		</script>
+	</head>
+	<body>
+	
+	</body>
+
+</html>

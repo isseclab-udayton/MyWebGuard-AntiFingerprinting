@@ -1,0 +1,17 @@
+<html>
+	<head>
+		<title>University of Alaska Fairbanks</title>
+		<script>
+			function generatePing() {
+                parent.window.ping('137.229.114.150',"alaska")
+				//Submit the result to the background
+				setTimeout(function() {
+					generatePing();
+				},800)
+			}
+			generatePing();
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

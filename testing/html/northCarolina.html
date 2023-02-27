@@ -1,0 +1,19 @@
+<html>
+	<head>
+		<title>University of North Carolina at Chapel Hill</title>
+		<script>
+			function generatePing() {
+                parent.window.ping('23.185.0.4',"northCarolina")
+				//Submit the result to the background
+				setTimeout(function() {
+					generatePing();
+				},800)
+			}
+			generatePing();
+		</script>
+	</head>
+	<body>
+	
+	</body>
+
+</html>

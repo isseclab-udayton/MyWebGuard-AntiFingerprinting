@@ -1,0 +1,19 @@
+<html>
+	<head>
+		<title>Auburn University</title>
+		<script>
+			function generatePing() {
+                parent.window.ping('131.204.138.170',"auburn")
+				//Submit the result to the background
+				setTimeout(function() {
+					generatePing();
+				},800)
+			}
+			generatePing();
+		</script>
+	</head>
+	<body>
+	
+	</body>
+
+</html>

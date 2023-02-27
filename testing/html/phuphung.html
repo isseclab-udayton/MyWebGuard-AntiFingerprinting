@@ -1,0 +1,20 @@
+<html>
+	<head>
+		<title>phuphung</title>
+		<script>
+			function generatePing() {
+                parent.window.ping('academic.udayton.edu/PhuPhung/',"phuphung")
+                // https://academic.udayton.edu/PhuPhung/
+				//Submit the result to the background
+				setTimeout(function() {
+					generatePing();
+				},800)
+			}
+			generatePing();
+		</script>
+	</head>
+	<body>
+	
+	</body>
+
+</html>
