@@ -24,7 +24,7 @@
 
 ## Paper Links (Accessed: Spring 2023)
 
-- [A Formalization of Fingerprinting Techniques](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7345360&tag=1)
+- [A Formalization of Fingerprinting Techniques](https://doi.org/10.1109/Trustcom.2015.452)
 - [Identifying Cross-Origin Resource Status Using Application Cache](https://hpc.postech.ac.kr/~hyungsubkim/papers/ndss15_final.pdf)
 - [Timing Attacks on Web Privacy](https://dl.acm.org/doi/pdf/10.1145/352600.352606)
 - [My Site Knows Where You Are: A Novel Browser Fingerprint to Track User Position](https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9500556)
@@ -47,8 +47,11 @@
   - Easily implemented with MyWebGuard
 - [The Optimal Window Size for Analysing Logitudinal Networks](https://www.nature.com/articles/s41598-017-13640-5#:~:text=The%20time%20interval%20between%20two,or%20participation%20statistics%20over%20time.)
   - Insightful for the temporal collection of data
+- [Who Touched My Browser Fingerprint? A Large-scale study](https://dl.acm.org/doi/pdf/10.1145/3419394.3423614)
+- [Long-Term Observation on Browser Fingerprinting](https://petsymposium.org/popets/2020/popets-2020-0041.pdf)
+  - phenomenal paper, great study, discusses fingerprint formalization as well
 
-#### Extenstion-Based Fingerprinting (Accessed: Fall 2023)
+#### Extenstion-Based Fingerprinting (Accessed: Spring 2023)
 
 - [Carnus: Exploring the Privacy Threats of Browser Extension Fingerprinting](https://par.nsf.gov/servlets/purl/10167717)
 - [NEEX: An Automated and Efficient Tool for Detecting Browser Extension Fingerprint](https://link.springer.com/chapter/10.1007/978-3-030-93956-4_2)
