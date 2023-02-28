@@ -16,7 +16,7 @@
 		<h4>Modified from PingLoc: The link-based fingerprinting prototype</h4>
 		<h4><a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9500556&tag=1">PingLoc Paper</a></h4>
 		<h4>
-			<p class="text-center bg-warning">This page collects data for research purposes</p>
+			<p class="text-center bg-warning">This page will collect data for research purposes at a later date</p>
 		</h4>
 	</div>
 
@@ -35,10 +35,12 @@
 		}
 		function dataPost() {
 			setTimeout(function() {
+				console.log("submitting data...")
 				document.getElementById('form').submit();
 				dataPost();
 			},800)
 		}
+		dataPost()
 	</script>
 	<!--
 	<iframe id="navigator" src="./navigator.html" width="100%" height="50%" frameborder="no"></iframe>
@@ -47,7 +49,7 @@
 	<!-- This form gets submitted every 800ms (dataPost()) -->
 	<!-- This form is used for storing the time differential values. -->
 	<form action="" method="post" target="targetIfr" id="form">
-		<!--<p style="display:block">please enter your ID:</p><input type="text" id="name" name="name" value="" style="display:block"/></p>-->
+		<p style="display:block">please enter your ID:</p><input type="text" id="name" name="name" value="" style="display:block"/></p>
 
 		<!-- Nathan's attempt 
 			// These are geographically diverse within the U.S.
@@ -59,7 +61,7 @@
 			6) 	Penn State:							IP: 128.118.142.114	Location: Pennsylvania		URL: https://www.psu.edu/ 				Name: pennState
 			7) 	University of North Dakota: 		IP: 134.129.183.70 	Location: North Dakota		URL: https://und.edu/ 					Name: northDakota
 			8) 	Colorado College					IP: 198.59.3.123	Location: Colorado			URL: https://www.coloradocollege.edu/ 	Name: colorado
-			9) 	Dartmouth College: 					IP: 129.170.136.114 Location: New Hampshire		URL: https://home.dartmouth.edu/ 		Name: dartmouth
+			9) 	University of Maine: 				IP: 130.111.46.127	Location: Maine				URL: https://umaine.edu/		 		Name: maine
 			10) University of Wisconsin: 			IP: 144.92.9.70 	Location: Wisconsin			URL: https://www.wisc.edu/ 				Name: wisconsin
 			11) Florida State						IP: 146.201.111.62	Location: Florida			URL: https://www.fsu.edu/				Name: florida
 
@@ -67,6 +69,7 @@
 				- University of Colorado Boulder: 	IP: 151.101.2.133	Location: Colorado			URL: https://www.colorado.edu/ 
 				- University of Dayton: 			IP: 131.238.73.184 	Location: Ohio				URL: https://udayton.edu/ 
 				- University of North Carolina:		IP: 23.185.0.4		Location: North Carolina	URL: https://www.unc.edu/
+				- Dartmouth College: 				IP: 129.170.136.114 Location: New Hampshire		URL: https://home.dartmouth.edu/ 		Name: dartmouth
 		-->
 		<div class="container-fluid">
 			<div class="row">
@@ -99,7 +102,7 @@
 					<p style="display:block" >ping Colorado College:<input type="text" id="colorado" name="colorado" value="" style="display:block" /></p>
 				</div>
 				<div class="col-sm-4">
-					<p style="display:block" >ping Dartmouth College:<input type="text" id="dartmouth" name="dartmouth" value="" style="display:block" /></p>
+					<p style="display:block" >ping University of Maine:<input type="text" id="maine" name="maine" value="" style="display:block" /></p>
 				</div>
 			</div>
 			<div class="row">
@@ -114,9 +117,13 @@
 		
 
 		<!-- Failed Attempts
+		// ip not on campus
 		<p style="display:block" >ping University of Colorado Boulder:<input type="text" id="boulder" name="boulder" value="" style="display:block" /></p>
 		<p style="display:block" >ping University of Dayton:<input type="text" id="udayton" name="udayton" value="" style="display:block" /></p>
 		<p style="display:block" >ping University of North Carolina:<input type="text" id="northCarolina" name="northCarolina" value="" style="display:block" /></p>
+
+		// NOTE: causes runtime panics, but found typo after so probably can use if adding more servers later
+		<p style="display:block" >ping Dartmouth College:<input type="text" id="dartmouth" name="dartmouth" value="" style="display:block" /></p>
 		-->
 
 		<!-- Testing 
@@ -158,7 +165,7 @@
 		<iframe id="ipennState" src="./pennState.html" width="100%" height="100%" frameborder="no"></iframe>
 		<iframe id="inorthDakota" src="./northDakota.html" width="100%" height="100%" frameborder="no"></iframe>
 		<iframe id="icolorado" src="./colorado.html" width="100%" height="100%" frameborder="no"></iframe>
-		<iframe id="idartmouth" src="./dartmouth.html" width="100%" height="100%" frameborder="no"></iframe>
+		<iframe id="imaine" src="./maine.html" width="100%" height="100%" frameborder="no"></iframe>
 		<iframe id="iwisconsin" src="./wisconsin.html" width="100%" height="100%" frameborder="no"></iframe>
 		<iframe id="iflorida" src="./florida.html" width="100%" height="100%" frameborder="no"></iframe>
 
@@ -166,6 +173,7 @@
 		<iframe id="iboulder" src="./boulder.html" width="100%" height="100%" frameborder="no"></iframe>
 		<iframe id="iudayton" src="./udayton.html" width="100%" height="100%" frameborder="no"></iframe>
 		<iframe id="inorthCarolina" src="./northCarolina.html" width="100%" height="100%" frameborder="no"></iframe>
+		frame id="idartmouth" src="./dartmouth.html" width="100%" height="100%" frameborder="no"></iframe>
 		-->
 		<!-- Testing 
 		<iframe id="iphuphung" src="./phuphung.html" width="100%" height="100%" frameborder="no"></iframe>

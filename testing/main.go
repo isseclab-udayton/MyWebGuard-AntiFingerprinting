@@ -12,6 +12,8 @@ import (
 	"strings"
 )
 
+// Testing Link: http://10.64.57.115:9000/index.html
+
 /*
 	func IP2Addr(ipAddress string) (result string) {
 		IPToAddress, err := gobaidumap.GetAddressViaIP(ipAddress)
@@ -25,8 +27,9 @@ import (
 		return
 	}
 */
+
 func WriteFile(content []string, name string, FileServer string) {
-	f, err := os.OpenFile("./"+FileServer+"/"+name+".xls", os.O_APPEND|os.O_CREATE, os.ModeAppend)
+	f, err := os.OpenFile(".\\"+FileServer+"\\"+name+".xls", os.O_APPEND|os.O_CREATE, os.ModeAppend)
 	if err != nil {
 		log.Fatal("WriteFile: ", err)
 	}
@@ -138,10 +141,20 @@ func colorado(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func dartmouth(w http.ResponseWriter, r *http.Request) {
+/*
+	func dartmouth(w http.ResponseWriter, r *http.Request) {
+		if r.Method == "GET" {
+			t, _ := template.ParseFiles("./html/dartmouth.html")
+			fmt.Println("dartmouth GET")
+			log.Println(t.Execute(w, nil))
+		}
+	}
+*/
+
+func maine(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		t, _ := template.ParseFiles("./html/darmouth.html")
-		fmt.Println("dartmouth GET")
+		t, _ := template.ParseFiles("./html/maine.html")
+		fmt.Println("maine GET")
 		log.Println(t.Execute(w, nil))
 	}
 }
@@ -191,7 +204,8 @@ func index(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("pennState:", r.Form["pennState"])
 		fmt.Println("northDakota:", r.Form["northDakota"])
 		fmt.Println("colorado:", r.Form["colorado"])
-		fmt.Println("dartmouth:", r.Form["dartmouth"])
+		// fmt.Println("dartmouth:", r.Form["dartmouth"])
+		fmt.Println("maine:", r.Form["maine"])
 		fmt.Println("wisconsin:", r.Form["wisconsin"])
 		fmt.Println("florida:", r.Form["florida"])
 
@@ -204,7 +218,8 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 		// write the data
 		// WriteFile(content []string,name string,FileServer string)
-		data := []string{"", r.Form["baidu"][0], r.Form["sina"][0], r.Form["nju"][0], r.Form["iqiyi"][0], r.Form["douban"][0], r.Form["so"][0], r.Form["youku"][0], r.Form["qidian"][0], r.Form["2345"][0], r.Form["dianping"][0], r.Form["seu"][0]}
+		// NOTE: Removed "r.Form["dartmouth"][0],"
+		data := []string{"", r.Form["stanford"][0], r.Form["oregonState"][0], r.Form["auburn"][0], r.Form["alaska"][0], r.Form["texas"][0], r.Form["pennState"][0], r.Form["northDakota"][0], r.Form["colorado"][0], r.Form["wisconsin"][0], r.Form["florida"][0]}
 		WriteFile(data, r.Form["name"][0], "hash")
 		data2 := []string{r.Form["name"][0], loginip, r.Form["deviceType"][0], r.Form["OSname"][0], r.Form["browserName"][0], r.Form["browserVer"][0], r.Form["adaptType"][0]}
 		WriteFile(data2, r.Form["name"][0], "ip")
@@ -230,7 +245,8 @@ func main() {
 	http.HandleFunc("/pennState.html", pennState)
 	http.HandleFunc("/northDakota.html", northDakota)
 	http.HandleFunc("/colorado.html", colorado)
-	http.HandleFunc("/dartmouth.html", dartmouth)
+	// http.HandleFunc("/dartmouth.html", dartmouth)
+	http.HandleFunc("/maine.html", maine)
 	http.HandleFunc("/wisconsin.html", wisconsin)
 	http.HandleFunc("/florida.html", florida)
 
