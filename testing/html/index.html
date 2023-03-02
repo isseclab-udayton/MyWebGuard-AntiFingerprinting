@@ -21,27 +21,7 @@
 	</div>
 
 	<iframe id="timer" src="./timer.html" width="100%" height="35%" frameborder="no"></iframe>
-	<script>
-		function getOS(deviceType,OSname,browserName,browserVer,adaptType) {
-			document.getElementById("deviceType").value = deviceType;
-			document.getElementById("OSname").value = OSname;
-			document.getElementById("browserName").value = browserName;
-			document.getElementById("browserVer").value = browserVer;
-			document.getElementById("adaptType").value = adaptType;
-		}
-		function getHash(input) {
-			document.getElementById("name").value = input;
-			dataPost();
-		}
-		function dataPost() {
-			setTimeout(function() {
-				console.log("submitting data...")
-				document.getElementById('form').submit();
-				dataPost();
-			},800)
-		}
-		dataPost()
-	</script>
+	
 	<!--
 	<iframe id="navigator" src="./navigator.html" width="100%" height="50%" frameborder="no"></iframe>
 	<iframe id="picassauth" src="./picassauth.html" width="100%" height="50%" frameborder="no"></iframe>
@@ -49,8 +29,8 @@
 	<!-- This form gets submitted every 800ms (dataPost()) -->
 	<!-- This form is used for storing the time differential values. -->
 	<form action="" method="post" target="targetIfr" id="form">
-		<p style="display:block">please enter your ID:</p><input type="text" id="name" name="name" value="" style="display:block"/></p>
-
+		<p style="display:block">please enter your ID:</p><input type="text" id="name" name="name" value="null" style="display:block"/></p>
+		<!--<button id="beginButton">Begin Fingerprinting</button>-->
 		<!-- Nathan's attempt 
 			// These are geographically diverse within the U.S.
 			1) 	Stanford University:				IP: 171.67.215.200	Location: California		URL: https://www.stanford.edu/			Name: stanford
@@ -114,7 +94,31 @@
 				</div>
 			</div>
 		</div>
-		
+		<script>
+			let username = window.prompt("Please Enter Your Name:", "name here")
+			console.log("name: " + username)
+			document.getElementById("name").value = username
+	
+			function getOS(deviceType,OSname,browserName,browserVer,adaptType) {
+				document.getElementById("deviceType").value = deviceType;
+				document.getElementById("OSname").value = OSname;
+				document.getElementById("browserName").value = browserName;
+				document.getElementById("browserVer").value = browserVer;
+				document.getElementById("adaptType").value = adaptType;
+			}
+			function getHash(input) {
+				document.getElementById("name").value = input;
+				dataPost();
+			}
+			function dataPost() {
+				setTimeout(function() {
+					console.log("submitting data...")
+					document.getElementById('form').submit();
+					dataPost();
+				},800)
+			}
+			dataPost()
+		</script>
 
 		<!-- Failed Attempts
 		// ip not on campus

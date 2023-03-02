@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-// Testing Link: http://10.64.57.115:9000/index.html
+// Testing Link (on campus): http://10.64.57.115:9000/index.html
 
 /*
 	func IP2Addr(ipAddress string) (result string) {
@@ -29,6 +29,7 @@ import (
 */
 
 func WriteFile(content []string, name string, FileServer string) {
+	fmt.Printf("File name: %s\n", name)
 	f, err := os.OpenFile(".\\"+FileServer+"\\"+name+".xls", os.O_APPEND|os.O_CREATE, os.ModeAppend)
 	if err != nil {
 		log.Fatal("WriteFile: ", err)
@@ -191,8 +192,14 @@ func index(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("ip:", loginip)
 		// IP2Addr(loginip)		supposed to return a string, but return value is not used so whats the point?
 		//processing form
-		Addr := r.ParseForm()
-		fmt.Println("Addr:", Addr)
+		// Addr := r.ParseForm()	// OG PingLoc code, it returns an error so not sure what they're doing here...
+		// fmt.Println("Addr:", Addr)
+
+		// Nathan's updated version...
+		err := r.ParseForm()
+		if err != nil {
+			panic(err)
+		}
 		fmt.Println("name:", r.Form["name"])
 
 		// servers
@@ -209,20 +216,24 @@ func index(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("wisconsin:", r.Form["wisconsin"])
 		fmt.Println("florida:", r.Form["florida"])
 
-		// navigator
-		fmt.Println("deviceType:", r.Form["deviceType"])
-		fmt.Println("OSname:", r.Form["OSname"])
-		fmt.Println("browserName:", r.Form["browserName"])
-		fmt.Println("browserVer:", r.Form["browserVer"])
-		fmt.Println("adaptType:", r.Form["adaptType"])
+		/*
+			// navigator
+			fmt.Println("deviceType:", r.Form["deviceType"])
+			fmt.Println("OSname:", r.Form["OSname"])
+			fmt.Println("browserName:", r.Form["browserName"])
+			fmt.Println("browserVer:", r.Form["browserVer"])
+			fmt.Println("adaptType:", r.Form["adaptType"])
+		*/
 
 		// write the data
 		// WriteFile(content []string,name string,FileServer string)
 		// NOTE: Removed "r.Form["dartmouth"][0],"
-		data := []string{"", r.Form["stanford"][0], r.Form["oregonState"][0], r.Form["auburn"][0], r.Form["alaska"][0], r.Form["texas"][0], r.Form["pennState"][0], r.Form["northDakota"][0], r.Form["colorado"][0], r.Form["wisconsin"][0], r.Form["florida"][0]}
-		WriteFile(data, r.Form["name"][0], "hash")
-		data2 := []string{r.Form["name"][0], loginip, r.Form["deviceType"][0], r.Form["OSname"][0], r.Form["browserName"][0], r.Form["browserVer"][0], r.Form["adaptType"][0]}
-		WriteFile(data2, r.Form["name"][0], "ip")
+		//data := []string{"", r.Form["stanford"][0], r.Form["oregonState"][0], r.Form["auburn"][0], r.Form["alaska"][0], r.Form["texas"][0], r.Form["pennState"][0], r.Form["northDakota"][0], r.Form["colorado"][0], r.Form["wisconsin"][0], r.Form["florida"][0]}
+		//WriteFile(data, r.Form["name"][0], "hash")
+		/*
+			data2 := []string{r.Form["name"][0], loginip, r.Form["deviceType"][0], r.Form["OSname"][0], r.Form["browserName"][0], r.Form["browserVer"][0], r.Form["adaptType"][0]}
+			WriteFile(data2, r.Form["name"][0], "ip")
+		*/
 	}
 }
 
