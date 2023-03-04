@@ -360,10 +360,4 @@ function updateGraphs() {
     Plotly.extendTraces('floridaGraph', {
         y: [[floridaID.value]]
     }, [0])
-
-    // update the graph every 3200ms
-    setTimeout(function() {
-        updateGraphs();
-    },800)
 }
-updateGraphs()

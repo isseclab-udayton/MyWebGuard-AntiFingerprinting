@@ -13,6 +13,7 @@ import (
 )
 
 // Testing Link (on campus): http://10.64.57.115:9000/index.html
+// Testing LInk (off campus): http://192.168.1.128:9000/index.html
 
 /*
 	func IP2Addr(ipAddress string) (result string) {
@@ -176,6 +177,14 @@ func florida(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func cssGet(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		t, _ := template.ParseFiles("./html/bootstrap.min.css")
+		fmt.Println("Css GET")
+		log.Println(t.Execute(w, nil))
+	}
+}
+
 func index(w http.ResponseWriter, r *http.Request) {
 	// client attempting to access index.html...
 	if r.Method == "GET" {
@@ -200,21 +209,20 @@ func index(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println("name:", r.Form["name"])
+		fmt.Println("name:", r.Form["name2"])
 
 		// servers
-		fmt.Println("stanford:", r.Form["stanford"])
-		fmt.Println("oregonState:", r.Form["oregonState"])
-		fmt.Println("auburn:", r.Form["auburn"])
-		fmt.Println("alaska:", r.Form["alaska"])
-		fmt.Println("texas:", r.Form["texas"])
-		fmt.Println("pennState:", r.Form["pennState"])
-		fmt.Println("northDakota:", r.Form["northDakota"])
-		fmt.Println("colorado:", r.Form["colorado"])
-		// fmt.Println("dartmouth:", r.Form["dartmouth"])
-		fmt.Println("maine:", r.Form["maine"])
-		fmt.Println("wisconsin:", r.Form["wisconsin"])
-		fmt.Println("florida:", r.Form["florida"])
+		fmt.Println("Stanford:", r.Form["StanfordVal"])
+		fmt.Println("Oregon State:", r.Form["Oregon StateVal"])
+		fmt.Println("Auburn:", r.Form["AuburnVal"])
+		fmt.Println("Alaska:", r.Form["AlaskaVal"])
+		fmt.Println("Texas:", r.Form["TexasVal"])
+		fmt.Println("Penn State:", r.Form["Penn StateVal"])
+		fmt.Println("North Dakota:", r.Form["North DakotaVal"])
+		fmt.Println("Colorado:", r.Form["ColoradoVal"])
+		fmt.Println("Maine:", r.Form["MaineVal"])
+		fmt.Println("Wisconsin:", r.Form["WisconsinVal"])
+		fmt.Println("Florida:", r.Form["FloridaVal"])
 
 		/*
 			// navigator
@@ -244,6 +252,7 @@ func main() {
 
 	// when these paths are requested, call this function to do stuff...
 	http.HandleFunc("/", index)
+	http.HandleFunc("/bootstrap.min.css", cssGet)
 	http.HandleFunc("/timer.html", timer)
 	http.HandleFunc("/navigator.html", navigator)
 	// http.HandleFunc("/picassauth.html", picassauth)
