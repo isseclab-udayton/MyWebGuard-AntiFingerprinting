@@ -46,9 +46,10 @@ function ping(ip,id){
     img.src = 'http://' + ip + '/' + start;					//This is the real goal of establishing the target website cache. The purpose of adding a small tail here is to make him jump out abnormally!
     
     // NATHAN: id is the website they are pinging, here they are adding the calculated time diff to the index.html
-    // Note: still not sure how this time diff info is collected, seems to be GET requests intercepted by some server but where are the GET's?????
 	setTimeout(function(){									//Here we write the time we have counted into the form
-		document.getElementById(id).value = time            
+        var valueID = id + "Val"
+		document.getElementById(valueID).value = time         //old method - puts it into an input box
+        document.getElementById(id).innerHTML = id + ": " + String(time) + " ms"  // new method - changes the html 
 		},MAX_LIMIT+1  
 	);
 

@@ -119,12 +119,17 @@ function monitor_ping(){
 	var HTMLImageElement_src_orginal_desc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src")
 	Object.defineProperty(HTMLImageElement, "src",
 		{
+			// not used for mitigation, but necessary to implement
 			get: function () {
 				console.log("Image getter intercepted...")
 				return HTMLImageElement_src_orginal_desc.get.call(HTMLImageElement);
 			},
+			// here is where we actually monitor PingLoc
 			set: function (val) {
+				// policy can be applied here
 				console.log("Image setter intercepted...")
+
+				// let them collect the data
 				HTMLImageElement_src_orginal_desc.set.call(HTMLImageElement, val);
 			},
 			enumerable: false,
