@@ -1,0 +1,323 @@
+<head>
+	<meta charset="utf-8" />
+
+	<link rel="stylesheet" href="https://mywebguard-antifingerprinting.herokuapp.com/bootstrap.min.css">
+	<script src="https://cdn.plot.ly/plotly-2.18.2.min.js"></script>
+	<script src="../js/ping.js"></script> 
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+	<!-- Jumbotron -->
+	<div class="p-5 text-center text-white bg-dark">
+		<h1 class="mb-3 text-white">Thesis Data Collection Site</h1>
+		<h4 class="mb-3 text-white">Mitigation of JavaScript-Based Fingerprinting Attacks Reliant on Client Data Generation</h4>
+		<h6 class="mb-3 text-white">A Link-based Fingerprinting Prototype</h6>
+		<h6 class="mb-3 text-white">Reproduced and Modified by: Nathan Joslin</h6>
+		<h6><a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9500556&tag=1" class="nav-link text-white">
+			PingLoc Paper
+		  </a></h6>
+		<span class="fs-4" id="name" name="name">User: </span>
+		<div class="fs-4" id="finishedCollecting" name="finishedCollecting"></div>
+	</div>
+	<script>
+		// get client's info before we start fingerprinting
+		alert("Hello! Thank you for your participation! Please stay on this tab until you are notified that the process is complete, as viewing other tabs interferes with the collection process. - Nathan J.")
+		let username = window.prompt("Please Enter Your Name: ", "name here")
+		document.getElementById("name").innerHTML += username
+		let zipcode = window.prompt("Please Enter Your Zipcode: ", "12345")
+		let city = window.prompt("Please Enter Your City: ", "City")
+	</script>
+	<!-- End Jumbotron -->
+	
+
+	
+	<!--
+	<iframe id="navigator" src="./navigator.html" width="100%" height="50%" frameborder="no"></iframe>
+	<iframe id="picassauth" src="./picassauth.html" width="100%" height="50%" frameborder="no"></iframe>
+	-->
+	<!-- Nathan's attempt 
+		// These are geographically diverse within the U.S.
+		1) 	Stanford University:				IP: 171.67.215.200	Location: California		URL: https://www.stanford.edu/			Name: stanford
+		2) 	Oregon State University:			IP: 52.27.33.250	Location: Oregon			URL: https://oregonstate.edu/ 			Name: oregonState
+		3) 	Auburn University:					IP:	131.204.138.170 Location: Alabama			URL: https://www.auburn.edu/ 			Name: auburn
+		4) 	University of Alaska Fairbanks: 	IP: 137.229.114.150	Location: Alaska			URL: https://www.uaf.edu/ 				Name: alaska
+		5) 	Texas A&M: 							IP: 165.91.22.70 	Location: Texas				URL: https://www.tamu.edu/				Name: texas
+		6) 	Penn State:							IP: 128.118.142.114	Location: Pennsylvania		URL: https://www.psu.edu/ 				Name: pennState
+		7) 	University of North Dakota: 		IP: 134.129.183.70 	Location: North Dakota		URL: https://und.edu/ 					Name: northDakota
+		8) 	Colorado College					IP: 198.59.3.123	Location: Colorado			URL: https://www.coloradocollege.edu/ 	Name: colorado
+		9) 	University of Maine: 				IP: 130.111.46.127	Location: Maine				URL: https://umaine.edu/		 		Name: maine
+		10) University of Wisconsin: 			IP: 144.92.9.70 	Location: Wisconsin			URL: https://www.wisc.edu/ 				Name: wisconsin
+		11) Florida State						IP: 146.201.111.62	Location: Florida			URL: https://www.fsu.edu/				Name: florida
+
+		Failed Attempts (IP leads to different state):
+			- University of Colorado Boulder: 	IP: 151.101.2.133	Location: Colorado			URL: https://www.colorado.edu/ 
+			- University of Dayton: 			IP: 131.238.73.184 	Location: Ohio				URL: https://udayton.edu/ 
+			- University of North Carolina:		IP: 23.185.0.4		Location: North Carolina	URL: https://www.unc.edu/
+			// dartmouth will likely work, there was a typo causing the panics...
+			- Dartmouth College: 				IP: 129.170.136.114 Location: New Hampshire		URL: https://home.dartmouth.edu/ 		Name: dartmouth
+	-->
+	<!-- Failed Attempts
+		// ip not on campus
+		<p style="display:block" >ping University of Colorado Boulder:<input type="text" id="boulder" name="boulder" value="" style="display:block" /></p>
+		<p style="display:block" >ping University of Dayton:<input type="text" id="udayton" name="udayton" value="" style="display:block" /></p>
+		<p style="display:block" >ping University of North Carolina:<input type="text" id="northCarolina" name="northCarolina" value="" style="display:block" /></p>
+
+		// NOTE: causes runtime panics, but found typo after so probably can use if adding more servers later
+		<p style="display:block" >ping Dartmouth College:<input type="text" id="dartmouth" name="dartmouth" value="" style="display:block" /></p>
+		 Testing 
+		<p style="display:block" >ping PhuPhung:<input type="text" id="phuphung" name="phuphung" value="" style="display:block" /></p>
+		<p style="display:block" >ping cps470:<input type="text" id="cps570" name="cps570" value="" style="display:block" /></p>
+		<p style="display:block" >ping facebook:<input type="text" id="facebook" name="facebook" value="" style="display:block" /></p>
+		<p style="display:block" >ping twitter:<input type="text" id="twitter" name="twitter" value="" style="display:block" /></p>
+		
+	-->
+	<!-- The Data Visualization: sidebar & graphs -->
+	<div class="container-fluid">
+		<div class="row bg-dark">
+			<!-- Sidebar-->
+			<div class="col-3 d-flex bg-dark position-fixed" id="">
+				<div class="d-flex flex-column text-white bg-dark">
+					<iframe id="timer" src="./timer.html" width="100%" height="25%" frameborder="no"></iframe>
+					<ul class="nav nav-pills flex-column">
+						<li>
+						</li>
+						<li>
+						<span class="fs-4" id="Stanford" name="stanford">Stanford: </span>
+						</li>
+						<li>
+						<span class="fs-4" id="OregonState" name="oregonState">Oregon State: </span>
+						</li>
+						<li>
+						<span class="fs-4" id="Auburn" name="auburn">Auburn: </span>
+						</li>
+						<li>
+						<span class="fs-4" id="Alaska" name="alaska">Alaska: </span>
+						</li>
+						<li>
+						<span class="fs-4" id="Texas" name="texas">Texas: </span>
+						</li>
+						<li>
+						<span class="fs-4" id="PennState" name="pennState">Penn State: </span>
+						</li>
+						<li>
+						<span class="fs-4" id="NorthDakota" name="northDakota">North Dakota: </span>
+						</li>
+						<li>
+						<span class="fs-4" id="Colorado" name="colorado">Colorado: </span>
+						</li>
+						<li>
+						<span class="fs-4" id="Maine" name="maine">Maine: </span>
+						</li>
+						<li>
+						<span class="fs-4" id="Wisconsin" name="wisconsin">Wisconsin: </span>
+						</li>
+						<li>
+						<span class="fs-4" id="Florida" name="florida">Florida: </span>
+						</li>
+					</ul>
+					<hr>
+					<!--
+					<div class="dropdown">
+						<a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+						<img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+						<strong>mdo</strong>
+						</a>
+						<ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+						<li><a class="dropdown-item" href="#">New project...</a></li>
+						<li><a class="dropdown-item" href="#">Settings</a></li>
+						<li><a class="dropdown-item" href="#">Profile</a></li>
+						<li><hr class="dropdown-divider"></li>
+						<li><a class="dropdown-item" href="#">Sign out</a></li>
+						</ul>
+					</div>
+					-->
+					</div>
+			</div>
+			<!-- End Sidebar-->
+			<div class="offset-3 col-sm-9 bg-dark">
+				<!-- First Row of Graphs-->
+				<div class="row">
+					<div class="col-sm-4">
+						<div id="stanfordGraph">
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div id="oregonGraph">
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div id="auburnGraph">
+						</div>
+					</div>
+				</div>
+				<!-- End First Row of Graphs-->
+
+				<!-- Second Row of Graphs-->
+				<div class="row">
+					<div class="col-sm-4">
+						<div id="alaskaGraph">
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div id="texasGraph">
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div id="pennStateGraph">
+						</div>
+					</div>
+				</div>
+				<!-- End SecondRow of Graphs-->
+
+				<!-- Third Row of Graphs-->
+				<div class="row">
+					<div class="col-sm-4">
+						<div id="northDakotaGraph">
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div id="coloradoGraph">
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div id="maineGraph">
+						</div>
+					</div>
+				</div>
+				<!-- End Third Row of Graphs-->
+
+				<!-- Fourth Row of Graphs-->
+				<div class="row">
+					<div class="col-sm-4">
+						<div id="wisconsinGraph">
+						</div>
+					</div>
+					<div class="col-sm-4">
+						<div id="floridaGraph">
+						</div>
+					</div>
+				</div>
+				<!-- End Fourth Row of Graphs-->
+			</div>
+		</div>
+	</div>
+
+	
+	
+	  
+
+	<!-- 
+		The image loading pages. 
+		- Each page attempts to load an image from a specific server
+		- Images are loaded every 800ms
+		- Images always error out
+	-->
+	<!-- This form gets submitted every 800ms (dataPost()) -->
+	<!-- This form is used for storing the time differential values. -->
+	<form method="post" target="targetIfr" id="form">
+		<div style="display:none">
+			<p>Name: <input type="text" id="name2" name="name2" value="" style="display:block"/></p>
+			<p>ping Stanford University:<input type="text" id="StanfordVal" name="StanfordVal" value="" style="display:block" /></p>
+			<p>ping Oregon State University:<input type="text" id="OregonStateVal" name="OregonStateVal" value="" style="display:block" /></p>
+			<p>ping Auburn University:<input type="text" id="AuburnVal" name="AuburnVal" value="" style="display:block" /></p>
+			<p>ping University of Alaska Fairbanks:<input type="text" id="AlaskaVal" name="AlaskaVal" value="" style="display:block" /></p>
+			<p>ping Texas A&M:<input type="text" id="TexasVal" name="TexasVal" value="" style="display:block" /></p>
+			<p>ping Penn State:<input type="text" id="PennStateVal" name="PennStateVal" value="" style="display:block" /></p>
+			<p>ping University of North Dakota:<input type="text" id="NorthDakotaVal" name="NorthDakotaVal" value="" style="display:block" /></p>
+			<p>ping Colorado College:<input type="text" id="ColoradoVal" name="ColoradoVal" value="" style="display:block" /></p>
+			<p>ping University of Maine:<input type="text" id="MaineVal" name="MaineVal" value="" style="display:block" /></p>
+			<p>ping University of Wisconsin-Madison:<input type="text" id="WisconsinVal" name="WisconsinVal" value="" style="display:block" /></p>
+			<p>ping University of Florida:<input type="text" id="FloridaVal" name="FloridaVal" value="" style="display:block" /></p>
+		</div>
+	</form>
+
+	<form method="post" target="targetIfr" id="newForm">
+		<div style="display:none">
+			<p>User Data:<input type="text" id="userData" name="userData" value="" style="display:block" /></p>
+		</div>
+	</form>
+
+	
+	<!-- The image iframes (hidden) Once these are loaded, the pinging will begin-->
+	<iframe name="targetIfr" style="display:block"></iframe>
+	<div id="pic" style="display:none">
+		<!-- Nathan's attempt -->
+		<iframe id="istanford" src="./stanford.html" width="100%" height="100%" frameborder="no"></iframe>
+		<iframe id="ioregonState" src="./oregonState.html" width="100%" height="100%" frameborder="no"></iframe>
+		<iframe id="iauburn" src="./auburn.html" width="100%" height="100%" frameborder="no"></iframe>
+		<iframe id="ialaska" src="./alaska.html" width="100%" height="100%" frameborder="no"></iframe>
+		<iframe id="itexas" src="./texas.html" width="100%" height="100%" frameborder="no"></iframe>
+		<iframe id="ipennState" src="./pennState.html" width="100%" height="100%" frameborder="no"></iframe>
+		<iframe id="inorthDakota" src="./northDakota.html" width="100%" height="100%" frameborder="no"></iframe>
+		<iframe id="icolorado" src="./colorado.html" width="100%" height="100%" frameborder="no"></iframe>
+		<iframe id="imaine" src="./maine.html" width="100%" height="100%" frameborder="no"></iframe>
+		<iframe id="iwisconsin" src="./wisconsin.html" width="100%" height="100%" frameborder="no"></iframe>
+		<iframe id="iflorida" src="./florida.html" width="100%" height="100%" frameborder="no"></iframe>
+
+		<!-- Failed Attempts
+		<iframe id="iboulder" src="./boulder.html" width="100%" height="100%" frameborder="no"></iframe>
+		<iframe id="iudayton" src="./udayton.html" width="100%" height="100%" frameborder="no"></iframe>
+		<iframe id="inorthCarolina" src="./northCarolina.html" width="100%" height="100%" frameborder="no"></iframe>
+		frame id="idartmouth" src="./dartmouth.html" width="100%" height="100%" frameborder="no"></iframe>
+		-->
+	</div>
+	<script type="text/javascript" src="../js/graph.js"></script>
+	<script>
+		var dataCollectionPhase = true;
+		// TODO: Let's get zipcode and city as well to ensure a geographically diverse dataset
+		// let userData = Array(76).fill(0)
+		var userData = {
+			"username" : username,
+			"zipcode" : zipcode,
+			"city" : city,
+			"linkData" : []
+		};
+		// console.log("userData: " + JSON.stringify(userData))
+		// let collectionCount = 0
+		function collectData(){
+			const newData = [document.getElementById("StanfordVal").value, document.getElementById("OregonStateVal").value, 
+			document.getElementById("AuburnVal").value, document.getElementById("AlaskaVal").value, 
+			document.getElementById("TexasVal").value, document.getElementById("PennStateVal").value, 
+			document.getElementById("NorthDakotaVal").value, document.getElementById("ColoradoVal").value,
+			document.getElementById("MaineVal").value, document.getElementById("WisconsinVal").value, document.getElementById("FloridaVal").value];
+			console.log("Collected Data: " + newData)
+			userData.linkData.push(newData)
+			// console.log("Updated userData: " + JSON.stringify(userData))
+			// userData[collectionCount] = newData
+			//console.log("User Data Updated: " + JSON.stringify(userData))
+			//collectionCount++
+		}
+
+		// refreshGraphs collects user data and refreshes the graphs every 800ms.
+		function refreshGraphs(){
+			setTimeout(function() {
+				if(dataCollectionPhase){
+					collectData()
+				}
+				updateGraphs()
+				refreshGraphs()
+			},800)
+		}
+		refreshGraphs()
+
+		// submitData submits user data every minute.
+		function submitData(){
+			setTimeout(function() {
+				dataCollectionPhase = false
+				console.log("Submitting User Data: " + JSON.stringify(userData))
+				document.getElementById("userData").value = JSON.stringify(userData)
+				//document.getElementById("name3").value = username
+				document.getElementById('newForm').submit();
+				alert("Data collection complete! Thank you for your time and participation in this study! - Nathan J.")
+			},100000) // 60000ms = 60sec = 1min
+		}
+		submitData()
+		//document.getElementById("name2").value = username	// make sure the name is set before we begin submitting the forms
+		//dataPost()
+		
+		// dataPost()
+	</script>
+	
+	
+</body>
