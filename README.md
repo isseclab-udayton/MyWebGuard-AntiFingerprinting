@@ -6,6 +6,12 @@ Mentors: Dr. Phu Phung, Dr. Ahmed El Ouadrhiri
 
 Spring 2023
 
+## Data Collection
+
+Please visit the link below to partitipate in the data collection for this thesis.
+
+Data Collection: [HerokuApp](https://mywebguard-antifingerprinting.herokuapp.com/)
+
 ## Mitigation of Fingerprinting Attacks Reliant on Client Data Generation
 
 Trello Workspace: [Honors Thesis Trello](https://trello.com/b/aWpvTMLX/honors-thesis)
