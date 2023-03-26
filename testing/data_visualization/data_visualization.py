@@ -13,23 +13,27 @@
 
 from pymongo import MongoClient
 import plotly.graph_objects as plotly
+import plotly.express as px
 import statistics as stat
 import math as math
 from scipy.stats import skew
 from scipy.stats import kurtosis
+import pandas as pd
+from sklearn.manifold import TSNE
+
 import numpy as np
 from pymongo.server_api import ServerApi
-from sklearn.datasets import make_moons
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 
 # NOTE TO SELF: mongodb queries are case sensitive!
 
+pd.options.plotting.backend = "plotly"
+
 # Global Vars
 window_start = 25
 window_end = 51
 window_size = (window_end - 1) - window_start
-
 
 # connect to the database
 client = MongoClient(
@@ -50,23 +54,13 @@ def fetch_city_data(city, collection):
     return clean_data(these_docs)
 
 
-# process_city_data returns an array of all instance traces for a city. [instance][server][datapoints]
-def process_city_data(city, collection):
-    city_instance_traces = []
+# get_city_traces returns an array of all instance traces for a city. [instance][server][datapoints]
+def get_city_traces(city, collection):
+    city_traces = []
     city_data = fetch_city_data(city, collection)
     for data_instance in city_data:
-        city_instance_traces.append(reconstruct_trace(data_instance))
-    # print("Processed data for city: %s" % city)
-    # print("Instances: %d" % len(city_instance_traces))
-    # print("Servers: %d" % len(city_instance_traces[0]))
-    # print("Datapoints: %d" % len(city_instance_traces[0][5]))
-    # print("This Datapoint: %d" % city_instance_traces[1][7][95])
-    return city_instance_traces
-
-
-# parse_data_instance returns a tuple of the city and link data for an instance of data.
-def parse_data_instance(data_instance):
-    return data_instance.get('city'), data_instance.get('linkData')
+        city_traces.append(reconstruct_trace(data_instance))
+    return city_traces
 
 
 # clean_data removes the empty data point present in all data instances
@@ -117,7 +111,7 @@ def visualize_city_data(city, collection):
         font=dict(
             family="Courier New, monospace",
             size=18,
-            color='#7f7f7f'     # middle gray
+            color='#7f7f7f'  # middle gray
         )
     )
     oregon = plotly.Figure(data=[plotly.Scatter(mode='lines', )])
@@ -242,7 +236,7 @@ def visualize_city_data(city, collection):
     )
 
     # get all traces of data from the City
-    instance_traces = process_city_data(city, collection)  # city_traces[traces][server][datapoints]
+    instance_traces = get_city_traces(city, collection)  # city_traces[traces][server][datapoints]
     instance_count = len(instance_traces)
 
     # build the graphs, one iteration per instance
@@ -276,7 +270,7 @@ def visualize_city_data(city, collection):
 # visualize_instance_data generates a graph for each instance of data from a city, with traces for each server.
 def visualize_instance_data(city, collection):
     # get all traces of data from the City
-    instance_traces = process_city_data(city, collection)  # city_traces[traces][server][datapoints]
+    instance_traces = get_city_traces(city, collection)  # city_traces[traces][server][datapoints]
     for instance in range(len(instance_traces)):
         # initialize graphs
         this_graph = plotly.Figure(data=[plotly.Scatter(mode='lines')])
@@ -325,75 +319,130 @@ def int_to_university(n):
     return this_server
 
 
-# parse_instance_windows returns the windows of data for each server of an instance.
-def parse_instance_windows(data_instance):
+# parse_windows returns the windows of data for each server of an instance.
+def parse_windows(trace):
     result = []
     for n in range(11):
-        result.append(data_instance[n][window_start:window_end])
+        result.append(trace[n][window_start:window_end])
     return result
 
 
 # window_max returns an array of the max values within the given window, for each server of an instance.
-def window_max(data_instance_window):
-    return max(data_instance_window)
+def window_max(data_window):
+    return max(data_window)
 
 
 # window_min returns an array of the min values within the given window, for each server of an instance.
-def window_min(data_instance_window):
-    return min(data_instance_window)
+def window_min(data_window):
+    return min(data_window)
 
 
 # window_mean returns an array of the sum of values of a window, for each server of an instance.
-def window_mean(data_instance_window):
-    return sum(data_instance_window) / window_size
+def window_mean(data_window):
+    return sum(data_window) / window_size
 
 
 # window_variance returns an array of the variances of each server's window in an instance.
-def window_variance(data_instance_window):
-    return stat.variance(data_instance_window)      # TODO: Not sure if this calculates variance same as paper
+def window_variance(data_window):
+    return stat.variance(data_window)  # TODO: Not sure if this calculates variance same as paper
 
 
 # root_mean_square returns the RMS of the window. This reflects the noise of the data window.
-def window_root_mean_square(data_instance_window):
-    tmp_window = data_instance_window[:]
-    for n in range(tmp_window):
-        tmp_window[n] = tmp_window[n]**2
+def window_root_mean_square(data_window):
+    tmp_window = data_window[:]
+    for n in range(len(tmp_window)):
+        tmp_window[n] = tmp_window[n] ** 2
     return math.sqrt(sum(tmp_window) / window_size)
 
 
 # window_skew returns the skew of the window.
-def window_skew(data_instance_window):
-    return skew(data_instance_window)
+def window_skew(data_window):
+    return skew(data_window)
 
 
 # window_kurtosis returns the kurtosis of the window        # TODO: Not sure if calculating right
-def window_kurtosis(data_instance_window):
-    return kurtosis(data_instance_window)
+def window_kurtosis(data_window):
+    return kurtosis(data_window)
 
 
 # min_max_standardize returns the min-max standardization of the window such that all data falls between [0,1]
-def min_max_standardize(data_instance_window):
-    tmp_window = data_instance_window[:]
-    for n in range(tmp_window):
-        tmp_window[n] = (data_instance_window[n] - window_min(data_instance_window)) \
-                        / (window_max(data_instance_window) - window_min(data_instance_window))
+def min_max_standardize(data_window):
+    tmp_window = []
+    for n in range(len(data_window)):
+        tmp_window.append(
+            (data_window[n] - window_min(data_window)) / (window_max(data_window) - window_min(data_window)))
     return tmp_window
 
 
-def extract_features(data_instance_window):
-    standardized_window = min_max_standardize(data_instance_window)
-    features = [window_max(standardized_window),
-                window_min(standardized_window),
-                window_mean(standardized_window),
-                window_variance(standardized_window),
-                window_root_mean_square(standardized_window),
-                window_skew(standardized_window),
-                window_kurtosis(standardized_window)]
-    return features
+# extract_features returns the features of an instance. A 11x7 array of features.
+def extract_features(data_instance_windows):
+    instance_features = []
+    standardized_windows = []
+    for window in data_instance_windows:
+        min_max_standardize(window)
+        standardized_windows.append(window)
+    for window in standardized_windows:
+        these_features = [window_max(window),
+                          window_min(window),
+                          window_mean(window),
+                          window_variance(window),
+                          window_root_mean_square(window),
+                          window_skew(window),
+                          window_kurtosis(window)]
+        instance_features.append(these_features)
+    # print("instance_features: %s" % instance_features)
+    return instance_features
+
+
+# traces_to_features converts an array of traces to an array of features.
+def traces_to_features(traces):
+    instance_windows = []
+    for trace in traces:
+        instance_windows.append(parse_windows(trace))
+    instance_features = []
+    for instance in instance_windows:
+        instance_features.append(extract_features(instance))
+    return instance_features
+
+
+def visualize_features(city_features):
+    # print(len(city_features[0]))
+    # features_dict = {}
+    # for instance in range(len(city_features)):
+    #    features_dict[str(instance)] = city_features[instance]
+
+    # ["max", "min", "mean", "variance", "rms", "skew", "kurtosis"]
+    df = pd.DataFrame(data=city_features,
+                      index=list('012345'),
+                      columns=["Stanford", "Oregon", "Auburn", "Alaska", "Texas", "Penn State", "North Dakota", "Colorado", "Maine", "Wisconsin", "Florida"])
+    print("%s" % df)
+    # fig = px.scatter_matrix(df)
+    # fig.show()
+    tsne = TSNE(n_components=2, perplexity=3)
+    projections = tsne.fit_transform(df)
+    fig = px.scatter(
+        projections, x=0, y=1
+    )
+    fig.show()
 
 
 # main
-visualize_city_data("Columbus", link_state_info)
-visualize_instance_data("Columbus", link_state_info)
+# visualize_city_data("Columbus", link_state_info)
+# visualize_instance_data("Columbus", link_state_info)
+
+# city_traces[traces][server][datapoints]
+columbus_traces = get_city_traces("Columbus", link_state_info)
+print("Columbus Traces Retrieved: %d" % len(columbus_traces))
+# dayton_traces = get_city_traces("Dayton", link_state_info)
+# liberty_traces = get_city_traces("Liberty Township", link_state_info)
+
+# city_features[instance][features][max, min, mean, variance, rms, skew, kurtosis]
+columbus_features = traces_to_features(columbus_traces)
+# dayton_features = traces_to_features(dayton_traces)
+# liberty_features = traces_to_features(liberty_traces)
+
+# print("Columbus Features:")
+# print(columbus_features)
+visualize_features(columbus_features)
 
 client.close()  # disconnect from mongodb
