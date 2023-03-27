@@ -101,170 +101,28 @@ def data_string_to_int(data_trace):
 
 # visualize_city_data generates a graph for each server, with traces for each instance of data from the city.
 def visualize_city_data(city, collection):
-    # initialize graphs
-    stanford = plotly.Figure(data=[plotly.Scatter(mode='lines')])
-    stanford.update_layout(
-        title=city + " -> Stanford",
-        xaxis_title="Pings",
-        yaxis_title="Time Delay(ms)",
-        legend_title="Instances",
-        font=dict(
-            family="Courier New, monospace",
-            size=18,
-            color='#7f7f7f'  # middle gray
-        )
-    )
-    oregon = plotly.Figure(data=[plotly.Scatter(mode='lines', )])
-    oregon.update_layout(
-        title=city + " -> Oregon State",
-        xaxis_title="Pings",
-        yaxis_title="Time Delay(ms)",
-        legend_title="Instances",
-        font=dict(
-            family="Courier New, monospace",
-            size=18,
-            color='#7f7f7f'  # middle gray
-        )
-    )
-    auburn = plotly.Figure(data=[plotly.Scatter(mode='lines', )])
-    auburn.update_layout(
-        title=city + " -> Auburn",
-        xaxis_title="Pings",
-        yaxis_title="Time Delay(ms)",
-        legend_title="Instances",
-        font=dict(
-            family="Courier New, monospace",
-            size=18,
-            color='#7f7f7f'  # middle gray
-        )
-    )
-    alaska = plotly.Figure(data=[plotly.Scatter(mode='lines', )])
-    alaska.update_layout(
-        title=city + " -> Alaska",
-        xaxis_title="Pings",
-        yaxis_title="Time Delay(ms)",
-        legend_title="Instances",
-        font=dict(
-            family="Courier New, monospace",
-            size=18,
-            color='#7f7f7f'  # middle gray
-        )
-    )
-    texas = plotly.Figure(data=[plotly.Scatter(mode='lines', )])
-    texas.update_layout(
-        title=city + " -> Texas",
-        xaxis_title="Pings",
-        yaxis_title="Time Delay(ms)",
-        legend_title="Instances",
-        font=dict(
-            family="Courier New, monospace",
-            size=18,
-            color='#7f7f7f'  # middle gray
-        )
-    )
-    penn_state = plotly.Figure(data=[plotly.Scatter(mode='lines', )])
-    penn_state.update_layout(
-        title=city + " -> Penn State",
-        xaxis_title="Pings",
-        yaxis_title="Time Delay(ms)",
-        legend_title="Instances",
-        font=dict(
-            family="Courier New, monospace",
-            size=18,
-            color='#7f7f7f'  # middle gray
-        )
-    )
-    north_dakota = plotly.Figure(data=[plotly.Scatter(mode='lines', )])
-    north_dakota.update_layout(
-        title=city + " -> North Dakota",
-        xaxis_title="Pings",
-        yaxis_title="Time Delay(ms)",
-        legend_title="Instances",
-        font=dict(
-            family="Courier New, monospace",
-            size=18,
-            color='#7f7f7f'  # middle gray
-        )
-    )
-    colorado = plotly.Figure(data=[plotly.Scatter(mode='lines', )])
-    colorado.update_layout(
-        title=city + " -> Colorado",
-        xaxis_title="Pings",
-        yaxis_title="Time Delay(ms)",
-        legend_title="Instances",
-        font=dict(
-            family="Courier New, monospace",
-            size=18,
-            color='#7f7f7f'  # middle gray
-        )
-    )
-    maine = plotly.Figure(data=[plotly.Scatter(mode='lines', )])
-    maine.update_layout(
-        title=city + " -> Maine",
-        xaxis_title="Pings",
-        yaxis_title="Time Delay(ms)",
-        legend_title="Instances",
-        font=dict(
-            family="Courier New, monospace",
-            size=18,
-            color='#7f7f7f'  # middle gray
-        )
-    )
-    wisconsin = plotly.Figure(data=[plotly.Scatter(mode='lines', )])
-    wisconsin.update_layout(
-        title=city + " -> Wisconsin",
-        xaxis_title="Pings",
-        yaxis_title="Time Delay(ms)",
-        legend_title="Instances",
-        font=dict(
-            family="Courier New, monospace",
-            size=18,
-            color='#7f7f7f'  # middle gray
-        )
-    )
-    florida = plotly.Figure(data=[plotly.Scatter(mode='lines', )])
-    florida.update_layout(
-        title=city + " -> Florida",
-        xaxis_title="Pings",
-        yaxis_title="Time Delay(ms)",
-        legend_title="Instances",
-        font=dict(
-            family="Courier New, monospace",
-            size=18,
-            color='#7f7f7f'  # middle gray
-        )
-    )
-
     # get all traces of data from the City
     instance_traces = get_city_traces(city, collection)  # city_traces[traces][server][datapoints]
-    instance_count = len(instance_traces)
 
-    # build the graphs, one iteration per instance
-    for instance in range(instance_count):
-        stanford.add_trace(plotly.Scatter(y=instance_traces[instance][0], name=str(instance)))
-        oregon.add_trace(plotly.Scatter(y=instance_traces[instance][1], name=str(instance)))
-        auburn.add_trace(plotly.Scatter(y=instance_traces[instance][2], name=str(instance)))
-        alaska.add_trace(plotly.Scatter(y=instance_traces[instance][3], name=str(instance)))
-        texas.add_trace(plotly.Scatter(y=instance_traces[instance][4], name=str(instance)))
-        penn_state.add_trace(plotly.Scatter(y=instance_traces[instance][5], name=str(instance)))
-        north_dakota.add_trace(plotly.Scatter(y=instance_traces[instance][6], name=str(instance)))
-        colorado.add_trace(plotly.Scatter(y=instance_traces[instance][7], name=str(instance)))
-        maine.add_trace(plotly.Scatter(y=instance_traces[instance][8], name=str(instance)))
-        wisconsin.add_trace(plotly.Scatter(y=instance_traces[instance][9], name=str(instance)))
-        florida.add_trace(plotly.Scatter(y=instance_traces[instance][10], name=str(instance)))
-
-    # display the graphs (opens 11 webpages, each with 1 graph)
-    stanford.show()
-    oregon.show()
-    auburn.show()
-    alaska.show()
-    texas.show()
-    penn_state.show()
-    north_dakota.show()
-    colorado.show()
-    maine.show()
-    wisconsin.show()
-    florida.show()
+    for server in range(11):
+        server_name = int_to_university(server)
+        # initialize server graph
+        this_graph = plotly.Figure(data=[plotly.Scatter(mode='lines')])
+        this_graph.update_layout(
+            title=city + " -> " + server_name,
+            xaxis_title="Pings",
+            yaxis_title="Time Delay(ms)",
+            legend_title="Instances",
+            font=dict(
+                family="Courier New, monospace",
+                size=18,
+                color='#7f7f7f'  # middle gray
+            )
+        )
+        # add each instance's trace to this server graph
+        for instance in range(len(instance_traces)):
+            this_graph.add_trace(plotly.Scatter(y=instance_traces[instance][server], name=str(instance)))
+        this_graph.show()
 
 
 # visualize_instance_data generates a graph for each instance of data from a city, with traces for each server.
@@ -431,18 +289,18 @@ def visualize_features(city_features):
 # visualize_instance_data("Columbus", link_state_info)
 
 # city_traces[traces][server][datapoints]
-columbus_traces = get_city_traces("Columbus", link_state_info)
-print("Columbus Traces Retrieved: %d" % len(columbus_traces))
+# columbus_traces = get_city_traces("Columbus", link_state_info)
+# print("Columbus Traces Retrieved: %d" % len(columbus_traces))
 # dayton_traces = get_city_traces("Dayton", link_state_info)
 # liberty_traces = get_city_traces("Liberty Township", link_state_info)
 
 # city_features[instance][features][max, min, mean, variance, rms, skew, kurtosis]
-columbus_features = traces_to_features(columbus_traces)
+# columbus_features = traces_to_features(columbus_traces)
 # dayton_features = traces_to_features(dayton_traces)
 # liberty_features = traces_to_features(liberty_traces)
 
 # print("Columbus Features:")
 # print(columbus_features)
-visualize_features(columbus_features)
+# visualize_features(columbus_features)
 
 client.close()  # disconnect from mongodb
