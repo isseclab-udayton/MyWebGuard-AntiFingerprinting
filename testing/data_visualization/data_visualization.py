@@ -60,6 +60,8 @@ def get_city_traces(city, collection):
     city_data = fetch_city_data(city, collection)
     for data_instance in city_data:
         city_traces.append(reconstruct_trace(data_instance))
+    if city == "Dayton":
+        del city_traces[4]
     return city_traces
 
 
@@ -227,28 +229,35 @@ def window_kurtosis(data_window):
 def min_max_standardize(data_window):
     tmp_window = []
     for n in range(len(data_window)):
-        tmp_window.append(
-            (data_window[n] - window_min(data_window)) / (window_max(data_window) - window_min(data_window)))
+        divisor = window_max(data_window) - window_min(data_window)
+        if divisor == 0:
+            # print("[ERROR] Cannot standardize an invalid data window: %s" % data_window)
+            divisor = 1
+        tmp_window.append((data_window[n] - window_min(data_window)) / divisor)
     return tmp_window
 
 
 # extract_features returns the features of an instance. A 11x7 array of features.
 def extract_features(data_instance_windows):
     instance_features = []
-    standardized_windows = []
-    for window in data_instance_windows:
-        min_max_standardize(window)
-        standardized_windows.append(window)
-    for window in standardized_windows:
-        these_features = [window_max(window),
-                          window_min(window),
-                          window_mean(window),
-                          window_variance(window),
-                          window_root_mean_square(window),
-                          window_skew(window),
-                          window_kurtosis(window)]
+    # This is the incorrect place to min-max-standardize
+    # standardized_windows = []
+    # count = 0
+    # for window in data_instance_windows:
+        # print("Window %d: %s" % (count, window))
+    #    this_std_window = min_max_standardize(window)
+    #    standardized_windows.append(this_std_window)
+    #    count = count + 1
+    for n in range(len(data_instance_windows)):
+        these_features = [window_max(data_instance_windows[n]),
+                          window_min(data_instance_windows[n]),
+                          window_mean(data_instance_windows[n]),
+                          window_variance(data_instance_windows[n]),
+                          window_root_mean_square(data_instance_windows[n]),
+                          window_skew(data_instance_windows[n]),
+                          window_kurtosis(data_instance_windows[n])]
         instance_features.append(these_features)
-    # print("instance_features: %s" % instance_features)
+    print("instance_features: %s" % instance_features)
     return instance_features
 
 
@@ -263,44 +272,99 @@ def traces_to_features(traces):
     return instance_features
 
 
-def visualize_features(city_features):
-    # print(len(city_features[0]))
-    # features_dict = {}
-    # for instance in range(len(city_features)):
-    #    features_dict[str(instance)] = city_features[instance]
-
+def visualize_one_city_features(city_features):
     # ["max", "min", "mean", "variance", "rms", "skew", "kurtosis"]
-    df = pd.DataFrame(data=city_features,
-                      index=list('012345'),
-                      columns=["Stanford", "Oregon", "Auburn", "Alaska", "Texas", "Penn State", "North Dakota", "Colorado", "Maine", "Wisconsin", "Florida"])
-    print("%s" % df)
-    # fig = px.scatter_matrix(df)
-    # fig.show()
-    tsne = TSNE(n_components=2, perplexity=3)
-    projections = tsne.fit_transform(df)
+    projection = project_features(city_features)
+    print("Projections: \n%s" % projection)
     fig = px.scatter(
-        projections, x=0, y=1
+        projection, x=0, y=1
     )
     fig.show()
 
 
-# main
-# visualize_city_data("Columbus", link_state_info)
-# visualize_instance_data("Columbus", link_state_info)
+# visualize_many_city_features takes an array of multiple cities' features
+def visualize_many_city_features(these_city_features):
+    # print(these_city_features)
+    fig = plotly.Figure()
+    fig.update_layout(title_text="Multiple City Features")
+    for this_city in these_city_features:
+        for these_features in this_city:
+            fig.add_trace(plotly.Scatter(project_features(these_features)))
+    fig.show()
 
+
+def project_features(instance_features):
+    combined_features = combine_feature_vectors(instance_features)
+    df = pd.DataFrame(data=combined_features)
+    transposed = df.transpose()
+    tsne = TSNE(n_components=1, random_state=0, perplexity=3)
+    projections = tsne.fit_transform(transposed.loc[:, :])
+    return projections
+
+
+def project_city_features(city_features):
+    combined_features = {}
+    for instance in range(len(city_features)):
+        this_key = "Instance " + str(instance)
+        combined_features[this_key] = combine_feature_vectors(city_features[instance])
+    df = pd.DataFrame(data=combined_features)
+    transposed = df.transpose()
+    # print("Transposed:\n%s" % transposed)
+    tsne = TSNE(n_components=2, random_state=0, perplexity=3)
+    projections = tsne.fit_transform(transposed.loc[:, :])
+    # print(projections)
+    x_y_projections = [[], []]
+    for m in range(len(projections)):
+        x_y_projections[0].append(projections[m][0])
+        x_y_projections[1].append(projections[m][1])
+    return x_y_projections
+
+
+def combine_feature_vectors(instance_features):
+    np_arrays = ()
+    for server_features in instance_features:
+        std_features = min_max_standardize(server_features)
+        np_arrays = np_arrays + (np.array(std_features),)
+    return np.concatenate(np_arrays)
+
+
+# main
+
+visualize_city_data("Columbus", link_state_info)
+# visualize_instance_data("Columbus", link_state_info)
+# visualize_instance_data("Liberty Township", link_state_info)
+# visualize_instance_data("Framingham", link_state_info)
+
+# print("Their table: ")
+# print(px.data.iris())
 # city_traces[traces][server][datapoints]
-# columbus_traces = get_city_traces("Columbus", link_state_info)
-# print("Columbus Traces Retrieved: %d" % len(columbus_traces))
-# dayton_traces = get_city_traces("Dayton", link_state_info)
+columbus_traces = get_city_traces("Columbus", link_state_info)
+dayton_traces = get_city_traces("Dayton", link_state_info)
 # liberty_traces = get_city_traces("Liberty Township", link_state_info)
+# framingham_traces = get_city_traces("Framingham", link_state_info)
 
 # city_features[instance][features][max, min, mean, variance, rms, skew, kurtosis]
-# columbus_features = traces_to_features(columbus_traces)
-# dayton_features = traces_to_features(dayton_traces)
+columbus_features = traces_to_features(columbus_traces)
+dayton_features = traces_to_features(dayton_traces)
 # liberty_features = traces_to_features(liberty_traces)
+# framingham_features = traces_to_features(framingham_traces)
 
 # print("Columbus Features:")
 # print(columbus_features)
-# visualize_features(columbus_features)
+# visualize_one_city_features(columbus_features)
+# visualize_many_city_features([columbus_features, dayton_features])
+
+these_city_features = [columbus_features, dayton_features]
+cities = ["Columbus", "Dayton"]
+fig = plotly.Figure()
+fig.update_layout(title_text="Multiple City Features")
+for this_city in range(len(these_city_features)):
+    x_y_projections = project_city_features(these_city_features[this_city])
+    fig.add_trace(plotly.Scatter(x=x_y_projections[0], y=x_y_projections[1], name=cities[this_city], mode="markers"))
+fig.show()
+
+
+
+
 
 client.close()  # disconnect from mongodb
