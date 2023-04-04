@@ -115,7 +115,7 @@ function poisonCanvas(ctx) {
 }
 
 
-
+/*
 // Anti-PingLoc Policies ----------------------------------------------------------------------------------------------------------
 function monitor_ping(){
 	var HTMLImageElement_src_orginal_desc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src")
@@ -145,6 +145,46 @@ function monitor_ping(){
 	mywebguard_log("img.src access is being monitored");
 }
 monitor_ping();
+*/
+function monitor_ping(){
+	var HTMLImageElement_src_original_desc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src")
+	Object.defineProperty(HTMLImageElement.prototype, "src",
+		{
+			...HTMLImageElement_src_original_desc,		// keep all other methods, just overwrite the ones we want
+			get: function () {
+				//console.log("Image getter intercepted...")
+				return HTMLImageElement_src_original_desc.get.call(this);
+			},
+			set: function (val) {
+				console.log("Image setter intercepted...")
+				var callstack = new Error().stack;
+				// mywebguard_log("img.src is set. source =" + getCodeSource(callstack));
+				// mywebguard_log("img.src is set. origin =" + getCodeOrigin(callstack));
+				thisCodeOrigin = getCodeOrigin(callstack)
+				if(!originAllowed(thisCodeOrigin, "img", "src", "set")){
+					console.log("Origin not allowed! YOU SHALL NOT PASS!")
+					setOriginSourceRead(thisCodeOrigin)
+				}else{
+					console.log("Origin" + thisCodeOrigin + "Allowed")
+					HTMLImageElement_src_original_desc.set.call(this, val);
+				}
+			},
+			enumerable: false,
+			configurable: false
+		}
+	);
+	mywebguard_log("img.src access is being monitored");
+}
+monitor_ping();
+
+// Also added this to origin allowed:
+const maliciousOrigins = ["https://mywebguard-antifingerprinting.herokuapp.com"];
+for (i = 0; i < maliciousOrigins.length; i++) {
+	console.log("Does " + origin + "exist in malicious origins list: " + maliciousOrigins[i])
+	if (maliciousOrigins[i] == origin){
+		return false;
+	}
+}
 
 /*
 function imgElement_policy(args, proceed, obj) {

@@ -43,7 +43,8 @@ function ping(ip,id){
 
     //NATHAN: This is really where ping beings...
     start = new Date().getTime();									//start the timer
-    img.src = 'https://' + ip + '/' + start;					//This is the real goal of establishing the target website cache. The purpose of adding a small tail here is to make him jump out abnormally!
+    img.src = 'http://' + ip + '/' + start;					//This is the real goal of establishing the target website cache. The purpose of adding a small tail here is to make him jump out abnormally!
+    console.log("testing...")
     
     // NATHAN: id is the website they are pinging, here they are adding the calculated time diff to the index.html
 	setTimeout(function(){									//Here we write the time we have counted into the form

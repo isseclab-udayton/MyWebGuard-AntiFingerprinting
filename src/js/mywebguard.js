@@ -104,6 +104,13 @@ injectee.innerHTML = `
 			return true;
 		}
 		function originAllowed(origin, objectnName, functionORproperty, args) {
+			const maliciousOrigins = ["https://mywebguard-antifingerprinting.herokuapp.com"];
+			for (i = 0; i < maliciousOrigins.length; i++) {
+				console.log("Does " + origin + "exist in malicious origins list: " + maliciousOrigins[i])
+				if (maliciousOrigins[i] == origin){
+					return false;
+				}
+			}
 			return true;
 		}
 		function isSameOrigin(url1, url2) {
@@ -236,25 +243,27 @@ injectee.innerHTML = `
 		}
 		// Anti-PingLoc Policies ----------------------------------------------------------------------------------------------------------
 		function monitor_ping(){
-			var HTMLImageElement_src_orginal_desc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src")
-			Object.defineProperty(HTMLImageElement, "src",
+			var HTMLImageElement_src_original_desc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src")
+			Object.defineProperty(HTMLImageElement.prototype, "src",
 				{
-					// not used for mitigation, but necessary to implement
+					...HTMLImageElement_src_original_desc,		// keep all other methods, just overwrite the ones we want
 					get: function () {
-						console.log("Image getter intercepted...")
-						return HTMLImageElement_src_orginal_desc.get.call(HTMLImageElement);
+						//console.log("Image getter intercepted...")
+						return HTMLImageElement_src_original_desc.get.call(this);
 					},
-					// here is where we actually monitor PingLoc. We intercept img.src = ... setting calls
 					set: function (val) {
-						// policy can be applied here
 						console.log("Image setter intercepted...")
 						var callstack = new Error().stack;
-						var code_origin = getCodeOrigin(callstack);
-						if (!originAllowed(code_origin, "img", "src", args)) {
-							console.log('[NOTICE] Image element has disallowed origin!');
+						// mywebguard_log("img.src is set. source =" + getCodeSource(callstack));
+						mywebguard_log("img.src is set. origin =" + getCodeOrigin(callstack));
+						thisCodeOrigin = getCodeOrigin(callstack)
+						if(!originAllowed(thisCodeOrigin, "img", "src", "set")){
+							console.log("Origin " + thisCodeOrigin + " is not allowed to set images! YOU SHALL NOT PASS!")
+							setOriginSourceRead(thisCodeOrigin)
+						}else{
+							console.log("Origin" + thisCodeOrigin + "Allowed")
+							HTMLImageElement_src_original_desc.set.call(this, val);
 						}
-						// let them collect the data
-						HTMLImageElement_src_orginal_desc.set.call(HTMLImageElement, val);
 					},
 					enumerable: false,
 					configurable: false
