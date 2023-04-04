@@ -245,6 +245,22 @@ def window_kurtosis(data_window):
     return kurtosis(data_window)
 
 
+# inter_quartile_range returns the IQR of the window as well as the quartiles.
+def inter_quartile_range(data_window):
+    # First quartile (Q1)
+    Q1 = np.percentile(data_window, 25, interpolation='midpoint')
+    # Third quartile (Q3)
+    Q3 = np.percentile(data_window, 75, interpolation='midpoint')
+    # Interquaritle range (IQR)
+    IQR = Q3 - Q1
+    return (IQR, Q1, Q3)
+
+
+# stddev returns the standard deviation of the window
+def stddev(data_window):
+    return np.std(data_window)
+
+
 # min_max_standardize returns the min-max standardization of the window such that all data falls between [0,1]
 def min_max_standardize(data_window):
     tmp_window = []
@@ -281,25 +297,31 @@ def extract_features(data_instance_windows):
     return instance_features
 
 
-def extract_features2(data_instance_windows):
+def extract_features_custom(data_instance_windows):
     '''
     extract_features2 extracts features from windows with pings >800 removed prior to all calculations.
-    The important addition in the second version is the addition of a new feature: lost packet count.
+    The important addition in the second version is the addition of the custom features.
     :param data_instance_windows: the instance of windows to calculate features for.
     :return: the 2-D array of features
     '''
     instance_features = []
     for n in range(len(data_instance_windows)):
         lost_packets, new_window = remove_lost_packets(data_instance_windows[n])
+        IQR, Q1, Q3 = inter_quartile_range(new_window)
         these_features = [window_max(new_window),
                           window_min(new_window),
                           window_mean(new_window),
-                          window_variance(new_window),
+                          IQR,
+                          Q1,
+                          Q3,
+                          # window_variance(new_window),
+                          stddev(new_window),   # replacing variance
                           window_root_mean_square(new_window),
                           window_skew(new_window),
                           window_kurtosis(new_window),
                           lost_packets]
         instance_features.append(these_features)
+        print("Window Feature: %s" % these_features)
     # print("instance_features from extraction v2: %s\n" % instance_features)
     return instance_features
 
@@ -556,7 +578,7 @@ synthetic_columbus_windows = create_synthetic_data("Columbus", columbus_windows,
 # visualize_windows_by_server("Columbus", synthetic_columbus_windows)
 synthetic_columbus_features = []
 for synthetic_instance in synthetic_columbus_windows:
-    synthetic_columbus_features.append(extract_features2(synthetic_instance))
+    synthetic_columbus_features.append(extract_features_custom(synthetic_instance))
 print("Extracted features from %d instances for the city of %s." % (len(synthetic_columbus_features), "Columbus"))
 # Visualize synthetic columbus data     NOTE: visualizing here results in wrong axis label, pings are x1000?
 # visualize_windows_by_server("Columbus", synthetic_columbus_windows)
@@ -577,7 +599,7 @@ wildwood_windows = traces_to_windows(wildwood_traces)
 synthetic_wildwood_windows = create_synthetic_data("Wildwood", wildwood_windows, 40, NOISE)
 synthetic_wildwood_features = []
 for synthetic_instance in synthetic_wildwood_windows:
-    synthetic_wildwood_features.append(extract_features2(synthetic_instance))
+    synthetic_wildwood_features.append(extract_features_custom(synthetic_instance))
 print("Extracted features from %d instances for the city of %s." % (len(synthetic_wildwood_features), "Wildwood"))
 
 # Framingham synthetic data
@@ -586,7 +608,7 @@ framingham_windows = traces_to_windows(framingham_traces)
 synthetic_framingham_windows = create_synthetic_data("Framingham", framingham_windows, 40, NOISE)
 synthetic_framingham_features = []
 for synthetic_instance in synthetic_framingham_windows:
-    synthetic_framingham_features.append(extract_features2(synthetic_instance))
+    synthetic_framingham_features.append(extract_features_custom(synthetic_instance))
 print("Extracted features from %d instances for the city of %s." % (len(synthetic_framingham_features), "Framingham"))
 
 # Menomie synthetic data
@@ -595,7 +617,7 @@ menomonie_windows = traces_to_windows(menomonie_traces)
 synthetic_menomonie_windows = create_synthetic_data("Menomonie", menomonie_windows, 40, NOISE)
 synthetic_menomonie_features = []
 for synthetic_instance in synthetic_menomonie_windows:
-    synthetic_menomonie_features.append(extract_features2(synthetic_instance))
+    synthetic_menomonie_features.append(extract_features_custom(synthetic_instance))
 print("Extracted features from %d instances for the city of %s." % (len(synthetic_menomonie_features), "Menomonie"))
 
 # Los Angeles synthetic data
@@ -604,7 +626,7 @@ la_windows = traces_to_windows(la_traces)
 synthetic_la_windows = create_synthetic_data("Los Angeles", la_windows, 40, NOISE)
 synthetic_la_features = []
 for synthetic_instance in synthetic_la_windows:
-    synthetic_la_features.append(extract_features2(synthetic_instance))
+    synthetic_la_features.append(extract_features_custom(synthetic_instance))
 print("Extracted features from %d instances for the city of %s." % (len(synthetic_la_features), "Los Angeles"))
 # visualize_windows_by_server("Los Angeles", la_windows)
 
