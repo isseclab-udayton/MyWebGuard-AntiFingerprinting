@@ -545,7 +545,7 @@ def remove_lost_packets(window):
 
 NOISE = 50
 K_VALUE = 45
-NEW_FEATURES = False
+NEW_FEATURES = True
 
 # Columbus Synthetic data
 columbus_traces_unprocessed = get_city_traces("Columbus", link_state_info)
@@ -556,7 +556,7 @@ synthetic_columbus_windows = create_synthetic_data("Columbus", columbus_windows,
 # visualize_windows_by_server("Columbus", synthetic_columbus_windows)
 synthetic_columbus_features = []
 for synthetic_instance in synthetic_columbus_windows:
-    synthetic_columbus_features.append(extract_features(synthetic_instance))
+    synthetic_columbus_features.append(extract_features2(synthetic_instance))
 print("Extracted features from %d instances for the city of %s." % (len(synthetic_columbus_features), "Columbus"))
 # Visualize synthetic columbus data     NOTE: visualizing here results in wrong axis label, pings are x1000?
 # visualize_windows_by_server("Columbus", synthetic_columbus_windows)
@@ -577,7 +577,7 @@ wildwood_windows = traces_to_windows(wildwood_traces)
 synthetic_wildwood_windows = create_synthetic_data("Wildwood", wildwood_windows, 40, NOISE)
 synthetic_wildwood_features = []
 for synthetic_instance in synthetic_wildwood_windows:
-    synthetic_wildwood_features.append(extract_features(synthetic_instance))
+    synthetic_wildwood_features.append(extract_features2(synthetic_instance))
 print("Extracted features from %d instances for the city of %s." % (len(synthetic_wildwood_features), "Wildwood"))
 
 # Framingham synthetic data
@@ -586,7 +586,7 @@ framingham_windows = traces_to_windows(framingham_traces)
 synthetic_framingham_windows = create_synthetic_data("Framingham", framingham_windows, 40, NOISE)
 synthetic_framingham_features = []
 for synthetic_instance in synthetic_framingham_windows:
-    synthetic_framingham_features.append(extract_features(synthetic_instance))
+    synthetic_framingham_features.append(extract_features2(synthetic_instance))
 print("Extracted features from %d instances for the city of %s." % (len(synthetic_framingham_features), "Framingham"))
 
 # Menomie synthetic data
@@ -595,7 +595,7 @@ menomonie_windows = traces_to_windows(menomonie_traces)
 synthetic_menomonie_windows = create_synthetic_data("Menomonie", menomonie_windows, 40, NOISE)
 synthetic_menomonie_features = []
 for synthetic_instance in synthetic_menomonie_windows:
-    synthetic_menomonie_features.append(extract_features(synthetic_instance))
+    synthetic_menomonie_features.append(extract_features2(synthetic_instance))
 print("Extracted features from %d instances for the city of %s." % (len(synthetic_menomonie_features), "Menomonie"))
 
 # Los Angeles synthetic data
@@ -604,9 +604,9 @@ la_windows = traces_to_windows(la_traces)
 synthetic_la_windows = create_synthetic_data("Los Angeles", la_windows, 40, NOISE)
 synthetic_la_features = []
 for synthetic_instance in synthetic_la_windows:
-    synthetic_la_features.append(extract_features(synthetic_instance))
+    synthetic_la_features.append(extract_features2(synthetic_instance))
 print("Extracted features from %d instances for the city of %s." % (len(synthetic_la_features), "Los Angeles"))
-visualize_windows_by_server("Los Angeles", la_windows)
+# visualize_windows_by_server("Los Angeles", la_windows)
 
 # aggregate & organize data
 input_data = [[], []]
@@ -658,7 +658,7 @@ y_score = clf.predict_proba(X_test)[:, 1]
 
 fig = px.scatter(
     X_test, x=0, y=1,
-    color=y_score,        # or use y_test
+    color=y_test,        # or use y_test, y_score
     color_continuous_scale='RdBu',
     symbol=y_test,      # assign symbols for each city
     labels={'symbol': 'label', 'color': 'score of <br>first class'},

@@ -114,7 +114,9 @@ function poisonCanvas(ctx) {
 	ctx.strokeText(poisonText, x, y); // use strokeText function so we don't infinitely recurse
 }
 
-// Anti-PingLoc ----------------------------------------------------------------------------------------------------------
+
+
+// Anti-PingLoc Policies ----------------------------------------------------------------------------------------------------------
 function monitor_ping(){
 	var HTMLImageElement_src_orginal_desc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src")
 	Object.defineProperty(HTMLImageElement, "src",
@@ -124,11 +126,15 @@ function monitor_ping(){
 				console.log("Image getter intercepted...")
 				return HTMLImageElement_src_orginal_desc.get.call(HTMLImageElement);
 			},
-			// here is where we actually monitor PingLoc
+			// here is where we actually monitor PingLoc. We intercept img.src = ... setting calls
 			set: function (val) {
 				// policy can be applied here
 				console.log("Image setter intercepted...")
-
+				var callstack = new Error().stack;
+				var code_origin = getCodeOrigin(callstack);
+				if (!originAllowed(code_origin, "img", "src", args)) {
+					console.log('[NOTICE] Image element has disallowed origin!');
+				}
 				// let them collect the data
 				HTMLImageElement_src_orginal_desc.set.call(HTMLImageElement, val);
 			},

@@ -234,18 +234,27 @@ injectee.innerHTML = `
 			ctx.font = "10px Arial";
 			ctx.strokeText(poisonText, x, y);
 		}
+		// Anti-PingLoc Policies ----------------------------------------------------------------------------------------------------------
 		function monitor_ping(){
-			var HTMLImageElement_src_original_desc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src")
-			Object.defineProperty(HTMLImageElement.prototype, "src",
+			var HTMLImageElement_src_orginal_desc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src")
+			Object.defineProperty(HTMLImageElement, "src",
 				{
-					...HTMLImageElement_src_original_desc,
+					// not used for mitigation, but necessary to implement
 					get: function () {
-						//console.log("Image getter intercepted...")
-						return HTMLImageElement_src_original_desc.get.call(this);
+						console.log("Image getter intercepted...")
+						return HTMLImageElement_src_orginal_desc.get.call(HTMLImageElement);
 					},
+					// here is where we actually monitor PingLoc. We intercept img.src = ... setting calls
 					set: function (val) {
+						// policy can be applied here
 						console.log("Image setter intercepted...")
-						HTMLImageElement_src_original_desc.set.call(this, val);
+						var callstack = new Error().stack;
+						var code_origin = getCodeOrigin(callstack);
+						if (!originAllowed(code_origin, "img", "src", args)) {
+							console.log('[NOTICE] Image element has disallowed origin!');
+						}
+						// let them collect the data
+						HTMLImageElement_src_orginal_desc.set.call(HTMLImageElement, val);
 					},
 					enumerable: false,
 					configurable: false

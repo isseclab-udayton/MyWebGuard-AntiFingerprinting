@@ -131,7 +131,7 @@
 		}
 		function originAllowed(origin, objectnName, functionORproperty, args) {
 			//TODO: implement specific rules
-			//alert("Debug: origin '" + origin + "' invokes " + objectnName + "." + functionORproperty + " is allowed");
+			alert("Debug: origin '" + origin + "' invokes " + objectnName + "." + functionORproperty + " is allowed");
 			return true;
 		}
 		function isSameOrigin(url1, url2) {

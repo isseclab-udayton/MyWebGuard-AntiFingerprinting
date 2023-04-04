@@ -17,16 +17,18 @@
 		<h6><a href="https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=9500556&tag=1" class="nav-link text-white">
 			PingLoc Paper
 		  </a></h6>
+		  <!--
 		<span class="fs-4" id="name" name="name">User: </span>
+		-->
 		<div class="fs-4" id="finishedCollecting" name="finishedCollecting"></div>
 	</div>
 	<script>
 		// get client's info before we start fingerprinting
-		alert("Hello! Thank you for your participation! Please stay on this tab until you are notified that the process is complete, as viewing other tabs interferes with the collection process. - Nathan J.")
-		let username = window.prompt("Please Enter Your Name: ", "name here")
-		document.getElementById("name").innerHTML += username
-		let zipcode = window.prompt("Please Enter Your Zipcode: ", "12345")
-		let city = window.prompt("Please Enter Your City: ", "City")
+		// alert("Hello! Thank you for your participation! Please stay on this tab until you are notified that the process is complete, as viewing other tabs interferes with the collection process. - Nathan J.")
+		// let username = window.prompt("Please Enter Your Name: ", "name here")
+		// document.getElementById("name").innerHTML += username
+		//let zipcode = window.prompt("Please Enter Your Zipcode: ", "12345")
+		let city = window.prompt("Please remain on this window until you are notified that the collection process is complete. Please Enter Your City: ", "City")
 	</script>
 	<!-- End Jumbotron -->
 	
@@ -268,8 +270,8 @@
 		// TODO: Let's get zipcode and city as well to ensure a geographically diverse dataset
 		// let userData = Array(76).fill(0)
 		var userData = {
-			"username" : username,
-			"zipcode" : zipcode,
+			// "username" : username,
+			// "zipcode" : zipcode,
 			"city" : city,
 			"linkData" : []
 		};
@@ -281,7 +283,7 @@
 			document.getElementById("TexasVal").value, document.getElementById("PennStateVal").value, 
 			document.getElementById("NorthDakotaVal").value, document.getElementById("ColoradoVal").value,
 			document.getElementById("MaineVal").value, document.getElementById("WisconsinVal").value, document.getElementById("FloridaVal").value];
-			console.log("Collected Data: " + newData)
+			// console.log("Collected Data: " + newData)
 			userData.linkData.push(newData)
 			// console.log("Updated userData: " + JSON.stringify(userData))
 			// userData[collectionCount] = newData
