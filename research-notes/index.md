@@ -61,6 +61,17 @@
 - [BEFP: An Extension Recognition System Based on Behavioral and Environmental Fingerprinting](https://downloads.hindawi.com/journals/scn/2022/7896571.pdf)
 - [The Dangers of Human Touch: Fingerprinting Browser Extensions through User Actions](https://www.usenix.org/conference/usenixsecurity22/presentation/solomos)
 
+## Paper Links - Summer 2023
+
+- [Who's in Control of YOur Control System?](https://www.ndss-symposium.org/wp-content/uploads/2017/09/who-control-your-control-system-device-fingerprinting-cyber-physical-systems.pdf)
+  - Discusses two device fingerprinting techniques reliant on communication between the application layer and transport layer. Known as "cross-layer" fingerprinting.
+- [nmap](https://nmap.org/book/man.html#man-description)
+  - Not a paper, but a long known tool that maps a user's network. Has many applications from admin inventory to monitoring service uptime.
+- [Network Protocol System Fingerprinting - A Formal Approach](http://www1.cs.columbia.edu/~danr/courses/6772/Fall06/papers/fingerprint.pdf)
+- [Remote Physical Device Fingerprinting](https://ieeexplore.ieee.org/abstract/document/1453529?casa_token=BJX-MAnf8W0AAAAA:1CvIkqOsfu5edJM5l6tllnYEf_XZ6b1MsOQsf-RoGTQeqANcoHqUtGOCNtexL24chf96abI_)
+  - "We accomplish this goal by exploiting small, microscopic deviations in device hardware: clock skews"
+- [Picasso: Lightweight Device Class Fingerprinting for Web Clients](https://dl.acm.org/doi/10.1145/2994459.2994467)
+
 ## Testing Tools
 
 Should use these to test implementation

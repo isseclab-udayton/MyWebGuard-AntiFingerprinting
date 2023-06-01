@@ -10,22 +10,22 @@
 #   - Do not call multiple graphing functions at once, as they refer to the same figures. Please download them
 #     before graphing another set.
 
-
-from pymongo import MongoClient
 import plotly.graph_objects as plotly
 import plotly.express as px
-import statistics as stat
-import math as math
 from scipy.stats import skew
 from scipy.stats import kurtosis
-import pandas as pd
 from sklearn.manifold import TSNE
 from sklearn.metrics import accuracy_score
-
-import numpy as np
-from pymongo.server_api import ServerApi
+from sklearn.preprocessing import normalize
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
+from pymongo import MongoClient
+import numpy as np
+import pandas as pd
+import math as math
+import statistics as stat
+from pymongo.server_api import ServerApi
+
 
 # NOTE TO SELF: mongodb queries are case sensitive!
 
@@ -314,14 +314,14 @@ def extract_features_custom(data_instance_windows):
                           IQR,
                           Q1,
                           Q3,
-                          # window_variance(new_window),
-                          stddev(new_window),   # replacing variance
+                          window_variance(new_window),
+                          # stddev(new_window),   # replacing variance
                           window_root_mean_square(new_window),
                           window_skew(new_window),
                           window_kurtosis(new_window),
                           lost_packets]
         instance_features.append(these_features)
-        print("Window Feature: %s" % these_features)
+        # print("Window Feature: %s" % these_features)
     # print("instance_features from extraction v2: %s\n" % instance_features)
     return instance_features
 
@@ -429,8 +429,9 @@ def combine_feature_vectors(instance_features):
     for server_features in instance_features:
         # std_features = min_max_standardize(server_features)
         np_arrays = np_arrays + (np.array(server_features),)
-    singe_vector = np.concatenate(np_arrays)
-    return min_max_standardize(singe_vector)
+    single_vector = np.concatenate(np_arrays)
+    # return min_max_standardize(singe_vector)
+    return single_vector
 
 
 def remove_instances(city_instances, remove_me):
@@ -528,6 +529,23 @@ def remove_lost_packets(window):
     return lost_packets, window
 
 
+
+def normalize_by_feature(instance_features):
+    '''
+    normalize_by_feature performs min-max standardization column wise to a feature vector.
+    :param instance_features: the feature vectors to normalize
+    :return: the normalized feature vectors
+    '''
+    np_instance_features = np.array(instance_features)
+    for col in range(len(np_instance_features[0])):
+        # print("Pre-Normalization Feature %d: %s" % (col, np_instance_features[:, col]))
+        normalize_me = np_instance_features[:, col]
+        dividend = normalize_me.max() - normalize_me.min()
+        if dividend == 0:
+            dividend = 1
+        np_instance_features[:, col] = (normalize_me - normalize_me.min()) / (dividend)
+        # print("Post-Normalization Feature %d: %s" % (col, np_instance_features[:, col]))
+    return np_instance_features
 # main
 
 # visualize_city_data("Columbus", link_state_info)
@@ -565,33 +583,51 @@ def remove_lost_packets(window):
 #     fig.add_trace(plotly.Scatter(x=x_y_projections[0], y=x_y_projections[1], name=cities[this_city], mode="markers"))
 # fig.show()
 
-NOISE = 50
+# visualize_instance_data("Columbus", link_state_info)
+
+NOISE = 25
 K_VALUE = 45
 NEW_FEATURES = True
 
 # Columbus Synthetic data
 columbus_traces_unprocessed = get_city_traces("Columbus", link_state_info)
+
+# visualize_windows_by_server("Columbus", columbus_traces_unprocessed)
+
 columbus_traces_processed = remove_instances(columbus_traces_unprocessed, [2, 4])
 # visualize_windows_by_server("Columbus", columbus_traces_processed)
 columbus_windows = traces_to_windows(columbus_traces_processed)
+# visualize_windows_by_server("Columbus", columbus_windows)
 synthetic_columbus_windows = create_synthetic_data("Columbus", columbus_windows, 30, NOISE)
 # visualize_windows_by_server("Columbus", synthetic_columbus_windows)
 synthetic_columbus_features = []
 for synthetic_instance in synthetic_columbus_windows:
+    # print("synth instance: %s" % synthetic_instance)
     synthetic_columbus_features.append(extract_features_custom(synthetic_instance))
 print("Extracted features from %d instances for the city of %s." % (len(synthetic_columbus_features), "Columbus"))
-# Visualize synthetic columbus data     NOTE: visualizing here results in wrong axis label, pings are x1000?
-# visualize_windows_by_server("Columbus", synthetic_columbus_windows)
+# visualize_windows_by_server("Columbus", columbus_windows)
+
+# standardizing synthetic features
+concatenated_columbus_features = []
+for instance in synthetic_columbus_features:
+    concatenated_columbus_features.append(combine_feature_vectors(instance))
+normalized_columbus_features = normalize_by_feature(concatenated_columbus_features)
 
 # Dayton synthetic data
-# dayton_traces = get_city_traces("Dayton", link_state_info)
-# dayton_windows = traces_to_windows(dayton_traces)
-# synthetic_dayton_windows = create_synthetic_data("Dayton", dayton_windows, 18, NOISE)
-# visualize_windows_by_server("Dayton", synthetic_dayton_windows)
-# synthetic_dayton_features = []
-# for synthetic_instance in synthetic_dayton_windows:
-#     synthetic_dayton_features.append(extract_features(synthetic_instance))
-# print("Extracted features from %d instances for the city of %s." % (len(synthetic_dayton_features), "Dayton"))
+dayton_traces = get_city_traces("Dayton", link_state_info)
+dayton_windows = traces_to_windows(dayton_traces)
+synthetic_dayton_windows = create_synthetic_data("Dayton", dayton_windows, 18, NOISE)
+synthetic_dayton_features = []
+for synthetic_instance in synthetic_dayton_windows:
+    synthetic_dayton_features.append(extract_features_custom(synthetic_instance))
+print("Extracted features from %d instances for the city of %s." % (len(synthetic_dayton_features), "Dayton"))
+concatenated_dayton_features = []
+for instance in synthetic_dayton_features:
+    concatenated_dayton_features.append(combine_feature_vectors(instance))
+normalized_dayton_features = normalize_by_feature(concatenated_dayton_features)
+
+# visualize_windows_by_server("Dayton", dayton_windows)
+
 
 # Wildwood synthetic data
 wildwood_traces = get_city_traces("Wildwood", link_state_info)
@@ -601,6 +637,10 @@ synthetic_wildwood_features = []
 for synthetic_instance in synthetic_wildwood_windows:
     synthetic_wildwood_features.append(extract_features_custom(synthetic_instance))
 print("Extracted features from %d instances for the city of %s." % (len(synthetic_wildwood_features), "Wildwood"))
+concatenated_wildwood_features = []
+for instance in synthetic_wildwood_features:
+    concatenated_wildwood_features.append(combine_feature_vectors(instance))
+normalized_wildwood_features = normalize_by_feature(concatenated_wildwood_features)
 
 # Framingham synthetic data
 framingham_traces = get_city_traces("Framingham", link_state_info)
@@ -610,6 +650,10 @@ synthetic_framingham_features = []
 for synthetic_instance in synthetic_framingham_windows:
     synthetic_framingham_features.append(extract_features_custom(synthetic_instance))
 print("Extracted features from %d instances for the city of %s." % (len(synthetic_framingham_features), "Framingham"))
+concatenated_framingham_features = []
+for instance in synthetic_framingham_features:
+    concatenated_framingham_features.append(combine_feature_vectors(instance))
+normalized_framingham_features = normalize_by_feature(concatenated_framingham_features)
 
 # Menomie synthetic data
 menomonie_traces = get_city_traces("Menomonie", link_state_info)
@@ -619,6 +663,10 @@ synthetic_menomonie_features = []
 for synthetic_instance in synthetic_menomonie_windows:
     synthetic_menomonie_features.append(extract_features_custom(synthetic_instance))
 print("Extracted features from %d instances for the city of %s." % (len(synthetic_menomonie_features), "Menomonie"))
+concatenated_menomonie_features = []
+for instance in synthetic_menomonie_features:
+    concatenated_menomonie_features.append(combine_feature_vectors(instance))
+normalized_menomonie_features = normalize_by_feature(concatenated_menomonie_features)
 
 # Los Angeles synthetic data
 la_traces = get_city_traces("Los Angeles", link_state_info)
@@ -629,33 +677,38 @@ for synthetic_instance in synthetic_la_windows:
     synthetic_la_features.append(extract_features_custom(synthetic_instance))
 print("Extracted features from %d instances for the city of %s." % (len(synthetic_la_features), "Los Angeles"))
 # visualize_windows_by_server("Los Angeles", la_windows)
+concatenated_la_features = []
+for instance in synthetic_la_features:
+    concatenated_la_features.append(combine_feature_vectors(instance))
+normalized_la_features = normalize_by_feature(concatenated_la_features)
+
+
+
 
 # aggregate & organize data
 input_data = [[], []]
-for instance in synthetic_columbus_features:
-    single_feature_vector = combine_feature_vectors(instance)
-    input_data[0].append(single_feature_vector)
+for instance in normalized_columbus_features:
+    input_data[0].append(instance)
     input_data[1].append("Columbus")
-#for instance in synthetic_dayton_features:
-#    single_feature_vector = combine_feature_vectors(instance)
-#    input_data[0].append(single_feature_vector)
-#    input_data[1].append("Dayton")
-for instance in synthetic_wildwood_features:
-    single_feature_vector = combine_feature_vectors(instance)
-    input_data[0].append(single_feature_vector)
+for instance in normalized_dayton_features:
+    input_data[0].append(instance)
+    input_data[1].append("Dayton")
+
+for instance in normalized_wildwood_features:
+    input_data[0].append(instance)
     input_data[1].append("Wildwood")
-for instance in synthetic_framingham_features:
-    single_feature_vector = combine_feature_vectors(instance)
-    input_data[0].append(single_feature_vector)
+for instance in normalized_framingham_features:
+    input_data[0].append(instance)
     input_data[1].append("Framingham")
-for instance in synthetic_menomonie_features:
-    single_feature_vector = combine_feature_vectors(instance)
-    input_data[0].append(single_feature_vector)
+for instance in normalized_menomonie_features:
+    input_data[0].append(instance)
     input_data[1].append("Menomonie")
-for instance in synthetic_la_features:
-    single_feature_vector = combine_feature_vectors(instance)
-    input_data[0].append(single_feature_vector)
+for instance in normalized_la_features:
+    input_data[0].append(instance)
     input_data[1].append("Los Angeles")
+
+
+
 
 # split the data
 X = input_data[0]
@@ -675,19 +728,86 @@ print("y_test: %s\n" % y_test)
 accuracy = accuracy_score(y_test, prediction)
 title = "New Features:%s K=%d Noise=%dms Datapoints=%d Accuracy=%.3f" % (NEW_FEATURES, K_VALUE, NOISE, len(input_data[0]), accuracy)
 print("KNN Model Accuracy Score: %s\n" % accuracy)
-y_score = clf.predict_proba(X_test)[:, 1]
+# y_score = clf.predict_proba(X_test)[:, 1]
 # y_score = clf.predict(X_test)
 
 fig = px.scatter(
-    X_test, x=0, y=1,
-    color=y_test,        # or use y_test, y_score
+    X_train, x=0, y=1,
+    color=y_train,        # or use y_test, y_score
     color_continuous_scale='RdBu',
-    symbol=y_test,      # assign symbols for each city
-    labels={'symbol': 'label', 'color': 'score of <br>first class'},
+    # symbol=y_test,      # assign symbols for each city
+    # labels={'symbol': 'label', 'color': 'score of <br>first class'},
     title=title
 )
 fig.update_traces(marker_size=12, marker_line_width=1.5)
 fig.update_layout(legend_orientation='h')
 fig.show()
+
+
+'''
+# real data only
+
+real_columbus_features = []
+for instance in columbus_windows:
+    real_columbus_features.append(extract_features(instance))
+concatenated_real_columbus_features = []
+for instance in real_columbus_features:
+    concatenated_real_columbus_features.append(combine_feature_vectors(instance))
+normalized_real_columbus_features = normalize_by_feature(concatenated_real_columbus_features)
+
+#for i in range(len(concatenated_real_columbus_features)):
+#    print("real columbus feature: %s" % concatenated_real_columbus_features[i])
+#    print("Normalized Columbus features: %s" % normalized_real_columbus_features[i])
+
+real_dayton_features = []
+for instance in dayton_windows:
+    real_dayton_features.append(extract_features(instance))
+concatenated_real_dayton_features = []
+for instance in real_dayton_features:
+    concatenated_real_dayton_features.append(combine_feature_vectors(instance))
+normalized_real_dayton_features = normalize_by_feature(concatenated_real_dayton_features)
+
+#for i in range(len(concatenated_real_dayton_features)):
+#    print("real dayton feature: %s" % concatenated_real_dayton_features[i])
+#    print("Normalized dayton features: %s" % normalized_real_dayton_features)
+
+real_input_data = [[], []]
+for instance in normalized_real_columbus_features:
+    real_input_data[0].append(instance)
+    real_input_data[1].append("Columbus")
+for instance in normalized_real_dayton_features:
+    real_input_data[0].append(instance)
+    real_input_data[1].append("Dayton")
+
+# split the data
+X_real = real_input_data[0]
+y_real = real_input_data[1]
+X_train_real, X_test_real, y_train_real, y_test_real = train_test_split(
+    X_real, y_real, test_size=0.25, random_state=0)
+
+# Fit the model on training data, predict on test data
+# For most of the synthetic data we duplicate a trace 40 times, choosing K <= 40 results
+# in perfect predictions.
+clf_real = KNeighborsClassifier(n_neighbors=2)
+clf_real.fit(X_train_real, y_train_real)
+prediction_real = clf_real.predict(X_test_real)
+accuracy_real = accuracy_score(y_test_real, prediction_real)
+title_real = "New Features:%s K=%d Noise=%dms Datapoints=%d Accuracy=%.3f" % (NEW_FEATURES, 2, 0, len(real_input_data[0]), accuracy_real)
+print("KNN Model Accuracy Score: %s\n" % accuracy_real)
+# y_score = clf.predict_proba(X_test)[:, 1]
+# y_score = clf.predict(X_test)
+
+fig_real = px.scatter(
+    X_test_real, x=0, y=1,
+    color=y_test_real,        # or use y_test, y_score
+    color_continuous_scale='RdBu',
+    symbol=y_test_real,      # assign symbols for each city
+    # labels={'symbol': 'label', 'color': 'score of <br>first class'},
+    title=title_real
+)
+fig_real.update_traces(marker_size=12, marker_line_width=1.5)
+fig_real.update_layout(legend_orientation='h')
+fig_real.show()
+'''
 
 client.close()  # disconnect from mongodb
