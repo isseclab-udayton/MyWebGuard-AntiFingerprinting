@@ -1,16 +1,17 @@
+// Policy applies montioring to key actions on canvas elements.
 function canvasElement_policy(args, proceed, obj) {
 	var element = proceed()	// allow the element to be accessed or created
-	// assign next policy if element is canvas
 	if (isCanvasElement(element)) {
-		//Monitor accesses to the canvas element
+		// monitor key actions on canvas element
 		console.log("[MyWebGuard][ALERT] Canvas element detected, monitoring the element...")
 		monitorMethod(element, "getContext", getContext_policy);
 		monitorMethod(element, "toDataURL", toDataURL_policy);
 	}
-	return element	// we need to track the object deeper to poison it...
+	return element
 }
-monitorMethod(document, "getElementById", canvasElement_policy); // begin monitoring the access to the canvas element, the canvas drawing should happen soon.
-monitorMethod(document, "createElement", canvasElement_policy);	// incase we want to monitor canvas element creation
+// apply top-level policy on all entry points
+monitorMethod(document, "getElementById", canvasElement_policy);
+monitorMethod(document, "createElement", canvasElement_policy);	
 
 
 // Policy used when monitoring acesses to a canvas element
@@ -22,18 +23,15 @@ function getContext_policy(args, proceed, obj) {
 	return ctx
 }
 
-// Policy monitoring a canvas element being exported to a data URL
-// The data URL has 
+// Policy monitoring a canvas element being exported to a data URL.
 // https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toDataURL
 function toDataURL_policy(args, proceed, obj) {
-	// Get context of HTMLCanvasElement
-	var ctx = obj.getContext("2d")
+	// toDataURL is called on the element, not its context. We need the context to poison.
+	var ctx = obj.getContext("2d") 
 	if (!canvasAllowed(ctx, "HTMLCanvasElement", "toDataURL", args)) {
 		poisonCanvas(ctx)
 	}
-	// Return proceed after poisoning the canvas
-	// The Data URL will be unidentifiable since the canvas has been poisoned
-	return proceed()
+	return proceed() // allow collection of fingerprint
 }
 
 // Policy monitoring the fillText method used for rendering text
@@ -150,22 +148,20 @@ function monitor_ping(){
 	var HTMLImageElement_src_original_desc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src")
 	Object.defineProperty(HTMLImageElement.prototype, "src",
 		{
-			...HTMLImageElement_src_original_desc,		// keep all other methods, just overwrite the ones we want
+			...HTMLImageElement_src_original_desc,	// keep all existing methods, just overwrite the ones we want
 			get: function () {
-				//console.log("Image getter intercepted...")
+				// noop, proceed as normal
 				return HTMLImageElement_src_original_desc.get.call(this);
 			},
 			set: function (val) {
-				console.log("Image setter intercepted...")
+				mywebguard_log("Image setter intercepted...")
 				var callstack = new Error().stack;
-				// mywebguard_log("img.src is set. source =" + getCodeSource(callstack));
-				// mywebguard_log("img.src is set. origin =" + getCodeOrigin(callstack));
 				thisCodeOrigin = getCodeOrigin(callstack)
 				if(!originAllowed(thisCodeOrigin, "img", "src", "set")){
-					console.log("Origin not allowed! YOU SHALL NOT PASS!")
+					mywebguard_log("Origin" + thisCodeOrigin + " is not allowed!")
 					setOriginSourceRead(thisCodeOrigin)
 				}else{
-					console.log("Origin" + thisCodeOrigin + "Allowed")
+					mywebguard_log("Origin" + thisCodeOrigin + "allowed.")
 					HTMLImageElement_src_original_desc.set.call(this, val);
 				}
 			},

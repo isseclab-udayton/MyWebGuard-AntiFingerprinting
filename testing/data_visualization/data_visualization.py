@@ -548,7 +548,7 @@ def normalize_by_feature(instance_features):
     return np_instance_features
 # main
 
-# visualize_city_data("Columbus", link_state_info)
+visualize_city_data("Wildwood", link_state_info)
 # visualize_instance_data("Columbus", link_state_info)
 # visualize_instance_data("Liberty Township", link_state_info)
 # visualize_instance_data("Framingham", link_state_info)
@@ -584,6 +584,10 @@ def normalize_by_feature(instance_features):
 # fig.show()
 
 # visualize_instance_data("Columbus", link_state_info)
+
+
+client.close()  # disconnect from mongodb
+exit(0)
 
 NOISE = 25
 K_VALUE = 45

@@ -64,7 +64,10 @@
 ## Paper Links - Summer 2023
 
 - [Who's in Control of YOur Control System?](https://www.ndss-symposium.org/wp-content/uploads/2017/09/who-control-your-control-system-device-fingerprinting-cyber-physical-systems.pdf)
-  - Discusses two device fingerprinting techniques reliant on communication between the application layer and transport layer. Known as "cross-layer" fingerprinting.
+  - Discusses two device fingerprinting techniques
+  - 1: takes advantage of data acquisition funcs by monitoring the interaction between app layer responses and transport layer acks, obaining time measurements regarding the speed and workload. (meausring workload is concerning here as it may be consistent on ICS devices but not a typical desktop)
+    - referred to as cross layer fingerprinting
+  - 2: uses the control aspects of ICS environments to GENERATE signatures from the physical ops taken by the devices on the network. Essentially hardware fingerprinting.
 - [nmap](https://nmap.org/book/man.html#man-description)
   - Not a paper, but a long known tool that maps a user's network. Has many applications from admin inventory to monitoring service uptime.
 - [Network Protocol System Fingerprinting - A Formal Approach](http://www1.cs.columbia.edu/~danr/courses/6772/Fall06/papers/fingerprint.pdf)
