@@ -46,7 +46,6 @@ func fpScript() func(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// router := mux.NewRouter()
 	port, set := os.LookupEnv("ISSECLAB_PORT")
 	if !set {
 		port = "8100"
@@ -62,18 +61,4 @@ func main() {
 	if err != nil {
 		fmt.Printf("server error: %v\n", err)
 	}
-
-	// // Serve typescript files
-	// router.PathPrefix("fingerprinter.js").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	// 	http.ServeFile(w, r, "./fingerprinter.js")
-	// })
-
-	// // Serve index (default)
-	// router.PathPrefix("/").HandlerFunc(index)
-
-	// // start http server with given address and a handler
-	// err := http.ListenAndServe(":"+port, router)
-	// if err != nil {
-	// 	log.Fatal("ListenAndServe: ", err)
-	// }
 }
