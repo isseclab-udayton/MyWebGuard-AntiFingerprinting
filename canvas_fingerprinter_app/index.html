@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Canvas Fingerprinter Demo</title>
+	<script src="fingerprinter.js"></script>
+</head>
+
+<body>
+	<div id="canvasImages">
+		<canvas id="canvas1"></canvas>
+	</div>
+	<script>
+		console.log("Initializing Canvas Element")
+		canvasElem = document.getElementById("canvas1")
+		canvasCtx = canvasElem.getContext('2d')
+
+		console.log("Generating Canvas Fingerprint")
+		fingerprint = GenerateTextFP(canvasElem, canvasCtx)
+		console.log("Fingerprint: " + fingerprint)
+	</script>
+</body>
+</html>
